@@ -141,11 +141,13 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     for (uint8_t i = 0; i < sizeof(left_side_leds) / sizeof(left_side_leds[0]); i++) {
         rgb_matrix_set_color(left_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
         rgb_matrix_set_color(right_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
+        RGB_MATRIX_INDICATOR_SET_COLOR(3, tempRGB.r, tempRGB.g, tempRGB.b);
         }
     }
 
     // highlight fn keys
-    static uint8_t l2_functions[26] = {6, 7, 8, 12, 13, 14, 15, 16, 18, 23, 28, 34, 38, 39, 44, 50, 56, 61, 66, 70, 80, 86, 94, 95, 96, 98};
+    // esc = 0, backspace = 86
+    static uint8_t l2_functions[26] = {0, 6, 7, 8, 12, 13, 14, 15, 16, 18, 23, 28, 34, 38, 39, 44, 50, 56, 61, 66, 70, 80, 94, 95, 96, 98};
     switch(get_highest_layer(layer_state)){  // special handling per layer
        case 2:  //layer one
          break;
