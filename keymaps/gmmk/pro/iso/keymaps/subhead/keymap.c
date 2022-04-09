@@ -55,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
         _______, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
-        _______, _______, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
+        _______, KC_WINLCK, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
 
     [2] = LAYOUT(
@@ -70,6 +70,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 // clang-format on
+
+// START ROTARY KNOB
 // ripped from: https://github.com/ForsakenRei/qmk_gmmk_pro/blob/main/gmmk/pro/ansi/keymaps/shigure/keymap.c
 #ifdef ENCODER_ENABLE // Encoder Functionality
 bool encoder_update_user(uint8_t index, bool clockwise)
@@ -119,3 +121,4 @@ bool encoder_update_user(uint8_t index, bool clockwise)
   return true;
 }
 #endif
+// END ROTARY KNOB
