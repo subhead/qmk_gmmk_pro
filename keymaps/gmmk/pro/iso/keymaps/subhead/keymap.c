@@ -15,9 +15,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
+#include "rgb_matrix_map.h"
 
 
 #define ARRAYSIZE(arr) sizeof(arr) / sizeof(arr[0])
+
+// KEYCODES
+enum custom_keycodes {
+  DOTCOM = SAFE_RANGE,    //Toggles Win key on and offtone?qwertz
+  KC_WINLCK,
+  BAR
+};
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -51,12 +59,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [1] = LAYOUT(
-        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
+        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_INS,          _______,
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
-        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
+        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______,          _______,
         _______, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
-        _______, _______, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
+        _______, KC_WINLCK, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
 
     [2] = LAYOUT(
@@ -123,7 +131,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
 }
 #endif
 // END ROTARY KNOB
-
+#ifdef RGB_MATRIX_ENABLE
 // caps log flash side bars red, press fn and all mapped keys are highlighted red
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     static uint32_t cycle_led_timer = 0;
@@ -145,6 +153,27 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         }
     }
 
+    // Disable WIN Key and light them up also light up WASD gaming keys
+    if (keymap_config.no_gui) {
+      rgb_matrix_set_color(LED_LWIN, RGB_RED); //light up Win key when disabled
+      rgb_matrix_set_color(LED_W, RGB_CHARTREUSE); //light up gaming keys with WSAD higlighted
+      rgb_matrix_set_color(LED_S, RGB_CHARTREUSE);
+      rgb_matrix_set_color(LED_A, RGB_CHARTREUSE);
+      rgb_matrix_set_color(LED_D, RGB_CHARTREUSE);
+      rgb_matrix_set_color(LED_Q, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_E, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_R, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_TAB, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_F, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_Z, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_X, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_C, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_V, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_SPC, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_LCTL, RGB_ORANGE2);
+      rgb_matrix_set_color(LED_LSFT, RGB_ORANGE2);
+    }
+
     // highlight fn keys
     // esc = 0, backspace = 86
     static uint8_t l2_functions[26] = {0, 6, 7, 8, 12, 13, 14, 15, 16, 18, 23, 28, 34, 38, 39, 44, 50, 56, 61, 66, 70, 80, 94, 95, 96, 98};
@@ -160,4 +189,27 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
          break;
        break;
     }
+}
+#endif // RGB_MATRIX_ENALBED
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+  switch (keycode) {
+    case DOTCOM:
+      if (record->event.pressed) {
+          SEND_STRING(".com");
+      } else {
+          // when keycode is released
+      }
+      break;
+
+    case KC_WINLCK:
+      if (record->event.pressed) {
+          SEND_STRING("KC_WINLCK");     
+          keymap_config.no_gui = !keymap_config.no_gui; //toggle status
+      } else unregister_code16(keycode);
+      break;
+  }
+
+  return true;
 }
