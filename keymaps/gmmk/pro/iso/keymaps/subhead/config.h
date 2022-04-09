@@ -19,7 +19,7 @@
 // TT set to two taps
 #define TAPPING_TOGGLE 3
 
-
+// RGB Matrix configuration
 #ifdef RGB_MATRIX_ENABLE
 	// RGB startup effect
 	#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_OUT_IN
@@ -35,5 +35,13 @@
     #define RGB_IDLE_BREATHE
     // fade in when we have been suspended
     #define RGB_FADE_IN
+#endif
+
+// IDLE timeouts configuration
+#ifdef IDLE_TIMEOUT_ENABLE
+    // default timeout minutes
+	#define TIMEOUT_THRESHOLD_DEFAULT 15
+    // upper limits (2 hours and 10 minutes -- no rgb indicators above this value)
+	#define TIMEOUT_THRESHOLD_MAX 140 
 #endif
 
