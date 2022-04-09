@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 
+
 #define ARRAYSIZE(arr) sizeof(arr) / sizeof(arr[0])
 
 // clang-format off
@@ -71,13 +72,90 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-#ifdef ENCODER_ENABLE
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (clockwise) {
-      tap_code(KC_VOLU);
-    } else {
+// START ROTARY KNOB
+// ripped from: https://github.com/ForsakenRei/qmk_gmmk_pro/blob/main/gmmk/pro/ansi/keymaps/shigure/keymap.c
+#ifdef ENCODER_ENABLE // Encoder Functionality
+bool encoder_update_user(uint8_t index, bool clockwise)
+{
+  if (clockwise)
+  {
+    if (keyboard_report->mods & MOD_BIT(KC_LCTL))
+    { // if holding Left Ctrl, scroll up and down
+      unregister_mods(MOD_BIT(KC_LCTL));
+      register_code(KC_PGDN);
+      register_mods(MOD_BIT(KC_LCTL));
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LSFT))
+    { // if you are holding L shift, scroll left and right
+      tap_code16(KC_WH_R);
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LALT))
+    { // if holding Left Alt, change media next track
+      tap_code(KC_MEDIA_NEXT_TRACK);
+    }
+    else
+    {
+      tap_code(KC_VOLU); // Otherwise it just changes volume
+    }
+  }
+  else
+  {
+    if (keyboard_report->mods & MOD_BIT(KC_LCTL))
+    {
+      unregister_mods(MOD_BIT(KC_LCTL));
+      register_code(KC_PGUP);
+      register_mods(MOD_BIT(KC_LCTL));
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LSFT))
+    {
+      tap_code16(KC_WH_L);
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LALT))
+    {
+      tap_code(KC_MEDIA_PREV_TRACK);
+    }
+    else
+    {
       tap_code(KC_VOLD);
     }
-    return true;
+  }
+  return true;
 }
 #endif
+// END ROTARY KNOB
+
+// caps log flash side bars red, press fn and all mapped keys are highlighted red
+void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    static uint32_t cycle_led_timer = 0;
+    static uint8_t  current_value   = 0;
+    static uint8_t  left_side_leds[8] = {68, 71, 74, 77, 81, 84, 88, 92};
+    static uint8_t  right_side_leds[8] = {69, 72, 75, 78, 82, 85, 89, 93};
+
+    if (host_keyboard_led_state().caps_lock) {
+        if (timer_elapsed32(cycle_led_timer) > 500) {
+            current_value = current_value == 0 ? 255 : 0;
+            cycle_led_timer = timer_read32();
+        }
+    HSV tempHSV = {.h = 0, .s = 255, .v = current_value};
+    RGB tempRGB = hsv_to_rgb(tempHSV);
+    for (uint8_t i = 0; i < sizeof(left_side_leds) / sizeof(left_side_leds[0]); i++) {
+        rgb_matrix_set_color(left_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
+        rgb_matrix_set_color(right_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
+        }
+    }
+
+    // highlight fn keys
+    static uint8_t l2_functions[26] = {6, 7, 8, 12, 13, 14, 15, 16, 18, 23, 28, 34, 38, 39, 44, 50, 56, 61, 66, 70, 80, 86, 94, 95, 96, 98};
+    switch(get_highest_layer(layer_state)){  // special handling per layer
+       case 2:  //layer one
+         break;
+       case 1:
+         for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
+             RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+         }
+         break;
+       default:
+         break;
+       break;
+    }
+}
