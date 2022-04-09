@@ -70,14 +70,52 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 // clang-format on
-
-#ifdef ENCODER_ENABLE
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (clockwise) {
-      tap_code(KC_VOLU);
-    } else {
+// ripped from: https://github.com/ForsakenRei/qmk_gmmk_pro/blob/main/gmmk/pro/ansi/keymaps/shigure/keymap.c
+#ifdef ENCODER_ENABLE // Encoder Functionality
+bool encoder_update_user(uint8_t index, bool clockwise)
+{
+  if (clockwise)
+  {
+    if (keyboard_report->mods & MOD_BIT(KC_LCTL))
+    { // if holding Left Ctrl, scroll up and down
+      unregister_mods(MOD_BIT(KC_LCTL));
+      register_code(KC_PGDN);
+      register_mods(MOD_BIT(KC_LCTL));
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LSFT))
+    { // if you are holding L shift, scroll left and right
+      tap_code16(KC_WH_R);
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LALT))
+    { // if holding Left Alt, change media next track
+      tap_code(KC_MEDIA_NEXT_TRACK);
+    }
+    else
+    {
+      tap_code(KC_VOLU); // Otherwise it just changes volume
+    }
+  }
+  else
+  {
+    if (keyboard_report->mods & MOD_BIT(KC_LCTL))
+    {
+      unregister_mods(MOD_BIT(KC_LCTL));
+      register_code(KC_PGUP);
+      register_mods(MOD_BIT(KC_LCTL));
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LSFT))
+    {
+      tap_code16(KC_WH_L);
+    }
+    else if (keyboard_report->mods & MOD_BIT(KC_LALT))
+    {
+      tap_code(KC_MEDIA_PREV_TRACK);
+    }
+    else
+    {
       tap_code(KC_VOLD);
     }
-    return true;
+  }
+  return true;
 }
 #endif
