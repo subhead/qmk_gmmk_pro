@@ -144,12 +144,14 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
             current_value = current_value == 0 ? 255 : 0;
             cycle_led_timer = timer_read32();
         }
+
     HSV tempHSV = {.h = 0, .s = 255, .v = current_value};
     RGB tempRGB = hsv_to_rgb(tempHSV);
+
     for (uint8_t i = 0; i < sizeof(left_side_leds) / sizeof(left_side_leds[0]); i++) {
         rgb_matrix_set_color(left_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
         rgb_matrix_set_color(right_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
-        RGB_MATRIX_INDICATOR_SET_COLOR(3, tempRGB.r, tempRGB.g, tempRGB.b);
+        RGB_MATRIX_INDICATOR_SET_COLOR(LED_CAPS, tempRGB.r, tempRGB.g, tempRGB.b);
         }
     }
 
@@ -176,7 +178,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
     // highlight fn keys
     // esc = 0, backspace = 86
-    static uint8_t l2_functions[26] = {0, 6, 7, 8, 12, 13, 14, 15, 16, 18, 23, 28, 34, 38, 39, 44, 50, 56, 61, 66, 70, 80, 94, 95, 96, 98};
+    static uint8_t l2_functions[26] = {LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
     switch(get_highest_layer(layer_state)){  // special handling per layer
        case 2:  //layer one
          break;
