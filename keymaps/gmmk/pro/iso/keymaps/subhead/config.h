@@ -21,15 +21,15 @@
 
 // RGB Matrix configuration
 #ifdef RGB_MATRIX_ENABLE
-	// RGB startup effect
-	#define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_OUT_IN
-	 // number of milliseconds to wait until turning off RGB automatically
+    // RGB startup effect
+    #define RGB_MATRIX_STARTUP_MODE RGB_MATRIX_CYCLE_OUT_IN
+        // number of milliseconds to wait until turning off RGB automatically
     #define RGB_DISABLE_TIMEOUT 300000 // 300 seconds / 5 min
     // start fading out before getting disabled
     // fading out is timed (depending on the rgb_matrix_config.speed) to have finished before reaching RGB_DISABLE_TIMEOUT
     #define RGB_DISABLE_WITH_FADE_OUT
     #define RGB_DISABLE_WHEN_USB_SUSPENDED
-	// number of milliseconds to wait until activating RGB idle effects
+    // number of milliseconds to wait until activating RGB idle effects
     #define RGB_IDLE_TIMEOUT 4500 // 4.5 seconds
     // activate breathe effect when idle
     #define RGB_IDLE_BREATHE
@@ -40,8 +40,8 @@
 // IDLE timeouts configuration
 #ifdef IDLE_TIMEOUT_ENABLE
     // default timeout minutes
-	#define TIMEOUT_THRESHOLD_DEFAULT 15
+    #define TIMEOUT_THRESHOLD_DEFAULT 15
     // upper limits (2 hours and 10 minutes -- no rgb indicators above this value)
-	#define TIMEOUT_THRESHOLD_MAX 140 
+    #define TIMEOUT_THRESHOLD_MAX 140 
 #endif
 
