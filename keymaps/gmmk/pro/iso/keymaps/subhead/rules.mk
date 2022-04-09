@@ -4,6 +4,7 @@ MCU = STM32F303
 # Bootloader selection
 BOOTLOADER = stm32-dfu
 
+LTO_ENABLE = yes			# link time optimization -- achieves a smaller compiled size
 BOOTMAGIC_ENABLE = yes      # Enable Bootmagic Lite
 MOUSEKEY_ENABLE = yes       # Mouse keys
 EXTRAKEY_ENABLE = yes       # Audio control and System control
@@ -15,3 +16,4 @@ RGB_MATRIX_ENABLE = yes
 RGB_MATRIX_DRIVER = AW20216
 IDLE_TIMEOUT_ENABLE = yes
 VIA_ENABLE = yes
+TAP_DANCE_ENABLE = no
