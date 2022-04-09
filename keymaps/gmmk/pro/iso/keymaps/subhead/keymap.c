@@ -123,3 +123,39 @@ bool encoder_update_user(uint8_t index, bool clockwise)
 }
 #endif
 // END ROTARY KNOB
+
+// caps log flash side bars red, press fn and all mapped keys are highlighted red
+void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+    static uint32_t cycle_led_timer = 0;
+    static uint8_t  current_value   = 0;
+    static uint8_t  left_side_leds[8] = {68, 71, 74, 77, 81, 84, 88, 92};
+    static uint8_t  right_side_leds[8] = {69, 72, 75, 78, 82, 85, 89, 93};
+
+    if (host_keyboard_led_state().caps_lock) {
+        if (timer_elapsed32(cycle_led_timer) > 500) {
+            current_value = current_value == 0 ? 255 : 0;
+            cycle_led_timer = timer_read32();
+        }
+    HSV tempHSV = {.h = 0, .s = 255, .v = current_value};
+    RGB tempRGB = hsv_to_rgb(tempHSV);
+    for (uint8_t i = 0; i < sizeof(left_side_leds) / sizeof(left_side_leds[0]); i++) {
+        rgb_matrix_set_color(left_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
+        rgb_matrix_set_color(right_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
+        }
+    }
+
+    // highlight fn keys
+    static uint8_t l2_functions[26] = {6, 7, 8, 12, 13, 14, 15, 16, 18, 23, 28, 34, 38, 39, 44, 50, 56, 61, 66, 70, 80, 86, 94, 95, 96, 98};
+    switch(get_highest_layer(layer_state)){  // special handling per layer
+       case 2:  //layer one
+         break;
+       case 1:
+         for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
+             RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+         }
+         break;
+       default:
+         break;
+       break;
+    }
+}
