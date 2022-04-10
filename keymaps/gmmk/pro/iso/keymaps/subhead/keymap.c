@@ -22,9 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // KEYCODES
 enum custom_keycodes {
-  DOTCOM = SAFE_RANGE,    //Toggles Win key on and offtone?qwertz
-  KC_WINLCK,
-  BAR
+  FOOBAR = SAFE_RANGE,  // Placeholder dont know why needed otherwise it wont work
+  KC_WINLCK             //Toggles Win key on and off
 };
 
 // clang-format off
@@ -59,10 +58,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [1] = LAYOUT(
-        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_INS,          _______,
+        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
-        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______,          _______,
+        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
         _______, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
         _______, KC_WINLCK, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
@@ -131,6 +130,8 @@ bool encoder_update_user(uint8_t index, bool clockwise)
 }
 #endif
 // END ROTARY KNOB
+
+
 #ifdef RGB_MATRIX_ENABLE
 // caps log flash side bars red, press fn and all mapped keys are highlighted red
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
@@ -192,24 +193,18 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 }
 #endif // RGB_MATRIX_ENALBED
 
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-
   switch (keycode) {
-    case DOTCOM:
-      if (record->event.pressed) {
-          SEND_STRING(".com");
-      } else {
-          // when keycode is released
-      }
-      break;
 
+    // WinLock toggle
     case KC_WINLCK:
       if (record->event.pressed) {
-          SEND_STRING("KC_WINLCK");     
-          keymap_config.no_gui = !keymap_config.no_gui; //toggle status
-      } else unregister_code16(keycode);
-      break;
+        keymap_config.no_gui = !keymap_config.no_gui; //toggle status
+      }
+      return true;
+      
+    default:
+      return true; // Process all other keycodes normally
   }
-
-  return true;
 }
