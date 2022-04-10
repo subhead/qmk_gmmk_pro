@@ -45,3 +45,5 @@
     #define TIMEOUT_THRESHOLD_MAX 140 
 #endif
 
+#define GAMING_MODE_ENABLE
+

@@ -157,22 +157,25 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // Disable WIN Key and light them up also light up WASD gaming keys
     if (keymap_config.no_gui) {
       rgb_matrix_set_color(LED_LWIN, RGB_RED); //light up Win key when disabled
-      rgb_matrix_set_color(LED_W, RGB_CHARTREUSE); //light up gaming keys with WSAD higlighted
-      rgb_matrix_set_color(LED_S, RGB_CHARTREUSE);
-      rgb_matrix_set_color(LED_A, RGB_CHARTREUSE);
-      rgb_matrix_set_color(LED_D, RGB_CHARTREUSE);
-      rgb_matrix_set_color(LED_Q, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_E, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_R, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_TAB, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_F, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_Z, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_X, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_C, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_V, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_SPC, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_LCTL, RGB_ORANGE2);
-      rgb_matrix_set_color(LED_LSFT, RGB_ORANGE2);
+
+      #ifdef GAMING_MODE_ENABLE
+        rgb_matrix_set_color(LED_W, RGB_CHARTREUSE); //light up gaming keys with WSAD higlighted
+        rgb_matrix_set_color(LED_S, RGB_CHARTREUSE);
+        rgb_matrix_set_color(LED_A, RGB_CHARTREUSE);
+        rgb_matrix_set_color(LED_D, RGB_CHARTREUSE);
+        rgb_matrix_set_color(LED_Q, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_E, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_R, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_TAB, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_F, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_Z, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_X, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_C, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_V, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_SPC, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_LCTL, RGB_ORANGE2);
+        rgb_matrix_set_color(LED_LSFT, RGB_ORANGE2);
+      #endif
     }
 
     // highlight fn keys
