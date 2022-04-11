@@ -35,6 +35,7 @@ enum custom_keycodes {
   KC_TOGGM,
   KC_WINLCK,             //Toggles Win key on and off
   KC_TEST,
+  KC_FDG1,
   FOO              // Toggles gaming mode
 };
 
@@ -82,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
-        _______, _______, _______, KC_TEST, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
         _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, _______
     ),
@@ -256,8 +257,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     
     case KC_TEST:
       if(record->event.pressed) {
-        print("test keycode");
-        SEND_STRING("TEST");
+        #ifdef DEBUG_ENABLE
+          print("test keycode");
+        #endif
       }
       return false;
       break;
@@ -265,7 +267,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // WinLock toggle
     case KC_WINLCK:
       if (record->event.pressed) {
-        print("winlock enabled");
+        #ifdef DEBUG_ENABLE
+          print("winlock keycode");
+        #endif
         keymap_config.no_gui = !keymap_config.no_gui;    
       }
       return false;
@@ -273,8 +277,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       
     case KC_TOGGM:
       if (record->event.pressed) {
-        print("gaming keycode pressed");
+        #ifdef DEBUG_ENABLE
+          print("gaming mode keycode");
+        #endif
         is_gaming_mode = !is_gaming_mode;
+      }
+      return false;
+      break;
+
+    case KC_FDG1:
+      if(record->event.pressed) {
+        #ifdef DEBUG_ENABLE
+          print("fdg1 keycode");
+        #endif
+        SEND_STRING(".ad.drgueldener.de");
       }
       return false;
       break;
