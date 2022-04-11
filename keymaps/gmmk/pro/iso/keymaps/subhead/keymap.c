@@ -79,12 +79,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [2] = LAYOUT(
-        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
+        RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, KC_TEST, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, RGB_MOD, _______,
-        _______, _______, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
+        _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, _______
     ),
 
 
@@ -183,6 +183,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     }
 
     // highlight G key when gaming mode is disabled
+    /*
     #ifdef GAMING_MODE_ENABLE
       if(!is_gaming_mode) {
         for(uint8_t g; g < 3; g++) {
@@ -191,6 +192,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         }
       }
     #endif
+    */
 
     // Disable WIN Key and light them up also light up WASD gaming keys
     if (keymap_config.no_gui) {
@@ -222,16 +224,23 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // highlight fn keys
     // esc = 0, backspace = 86
 static uint8_t l2_functions[29] = {LED_LWIN, LED_C, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};    switch(get_highest_layer(layer_state)){  // special handling per layer
-       case 2:  //layer one
-         break;
-       case 1:
-         for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
-             RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+static uint8_t l3_functions[1] = {LED_E};
+      case 3:  //layer one
+        break;
+      case 2:
+        for (uint8_t i = 0; i < sizeof(l3_functions) / sizeof(l3_functions[0]); i++) {
+             RGB_MATRIX_INDICATOR_SET_COLOR(l3_functions[i], 255, 0, 0);
          }
-         break;
-       default:
-         break;
-       break;
+      break;
+      
+      case 1:
+        for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+        }
+        break;
+      default:
+        break;
+      break;
     }
 }
 #endif // RGB_MATRIX_ENALBED
