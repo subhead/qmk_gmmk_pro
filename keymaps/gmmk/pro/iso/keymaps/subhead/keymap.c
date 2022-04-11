@@ -74,16 +74,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
-        _______, _______, _______, RGB_HUI, KC_TEST, KC_TOGGM, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
-        _______, KC_WINLCK, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
+        _______, _______, _______, RGB_HUI, _______, KC_TOGGM, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
+        _______, KC_WINLCK, _______,                            _______,                            MO(2), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
 
     [2] = LAYOUT(
-        _______, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
-        _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RESET,            _______,
-        _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
-        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
+        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
+        _______, _______, _______, KC_TEST, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, RGB_MOD, _______,
         _______, _______, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
 
@@ -91,8 +91,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-
+// so globals
 static bool is_gaming_mode = true;
+//static bool is_gaming_mode_led_on = false;
 
 void keyboard_post_init_user(void) {
   #ifdef DEBUG_ENABLE
@@ -165,6 +166,8 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     static uint8_t  left_side_leds[8] = {68, 71, 74, 77, 81, 84, 88, 92};
     static uint8_t  right_side_leds[8] = {69, 72, 75, 78, 82, 85, 89, 93};
 
+
+
     if (host_keyboard_led_state().caps_lock) {
         if (timer_elapsed32(cycle_led_timer) > 500) {
             current_value = current_value == 0 ? 255 : 0;
@@ -182,7 +185,10 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // highlight G key when gaming mode is disabled
     #ifdef GAMING_MODE_ENABLE
       if(!is_gaming_mode) {
-        rgb_matrix_set_color(LED_G, RGB_PURPLE2);
+        for(uint8_t g; g < 3; g++) {
+          rgb_matrix_set_color(LED_G, RGB_PURPLE2);
+
+        }
       }
     #endif
 
