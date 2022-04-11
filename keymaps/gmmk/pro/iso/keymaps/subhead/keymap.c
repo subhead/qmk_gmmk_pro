@@ -81,8 +81,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [2] = LAYOUT(
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
-        _______, _______, _______, KC_TEST, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
+        _______, _______, _______, KC_TEST, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
         _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, _______
     ),
@@ -223,8 +223,8 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
     // highlight fn keys
     // esc = 0, backspace = 86
-static uint8_t l2_functions[29] = {LED_LWIN, LED_C, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};    switch(get_highest_layer(layer_state)){  // special handling per layer
-static uint8_t l3_functions[1] = {LED_E};
+static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};    switch(get_highest_layer(layer_state)){  // special handling per layer
+static uint8_t l3_functions[1] = {LED_F};
       case 3:  //layer one
         break;
       case 2:
@@ -257,6 +257,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case KC_TEST:
       if(record->event.pressed) {
         print("test keycode");
+        SEND_STRING("TEST");
       }
       return false;
       break;
