@@ -35,7 +35,8 @@
     #define RGB_IDLE_BREATHE
     // fade in when we have been suspended
     #define RGB_FADE_IN
-    #define GAMING_MODE_ENABLE
+    #define GAMING_MODE
+    #define ARROW_MODE
 
 #endif
 

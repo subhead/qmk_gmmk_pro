@@ -36,6 +36,7 @@ enum custom_keycodes {
   KC_WINLCK,             //Toggles Win key on and off
   KC_TEST,
   KC_FDG1,
+  TOG_ARROW,
   FOO              // Toggles gaming mode
 };
 
@@ -82,7 +83,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [2] = LAYOUT(
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
         _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, _______
@@ -94,7 +95,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 // so globals
 static bool is_gaming_mode = true;
+static bool is_arrow_mode = true;
 //static bool is_gaming_mode_led_on = false;
+#ifdef ARROW_MODE
+  static uint8_t arrow_keys[4] = {94, 80, 98, 96};
+#endif
+
+#ifdef RGB_MATRIX_ENABLE
+  static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
+  static uint8_t l3_functions[1] = {LED_F};
+#endif
 
 void keyboard_post_init_user(void) {
   #ifdef DEBUG_ENABLE
@@ -167,39 +177,49 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     static uint8_t  left_side_leds[8] = {68, 71, 74, 77, 81, 84, 88, 92};
     static uint8_t  right_side_leds[8] = {69, 72, 75, 78, 82, 85, 89, 93};
 
-
-
     if (host_keyboard_led_state().caps_lock) {
-        if (timer_elapsed32(cycle_led_timer) > 500) {
-            current_value = current_value == 0 ? 255 : 0;
-            cycle_led_timer = timer_read32();
-        }
-    HSV tempHSV = {.h = 0, .s = 255, .v = current_value};
-    RGB tempRGB = hsv_to_rgb(tempHSV);
-    for (uint8_t i = 0; i < sizeof(left_side_leds) / sizeof(left_side_leds[0]); i++) {
+      if (timer_elapsed32(cycle_led_timer) > 500) {
+        current_value = current_value == 0 ? 255 : 0;
+        cycle_led_timer = timer_read32();
+      }
+
+      HSV tempHSV = {.h = 0, .s = 255, .v = current_value};
+      RGB tempRGB = hsv_to_rgb(tempHSV);
+
+      for (uint8_t i = 0; i < sizeof(left_side_leds) / sizeof(left_side_leds[0]); i++) {
         rgb_matrix_set_color(left_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
         rgb_matrix_set_color(right_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
         RGB_MATRIX_INDICATOR_SET_COLOR(3, tempRGB.r, tempRGB.g, tempRGB.b);
-        }
+      }
     }
+
+
+    // arrow mode highlight arrow keys
+    #ifdef ARROW_MODE
+      if(is_arrow_mode) {
+        for (uint8_t i = 0; i < sizeof(arrow_keys) / sizeof(arrow_keys[0]); i++) {
+          RGB_MATRIX_INDICATOR_SET_COLOR(arrow_keys[i], 255, 255, 255);
+        }
+      }
+    #endif
 
     // highlight G key when gaming mode is disabled
     /*
-    #ifdef GAMING_MODE_ENABLE
+    #ifdef GAMING_MODE
       if(!is_gaming_mode) {
         for(uint8_t g; g < 3; g++) {
           rgb_matrix_set_color(LED_G, RGB_PURPLE2);
-
         }
       }
     #endif
     */
 
+
     // Disable WIN Key and light them up also light up WASD gaming keys
     if (keymap_config.no_gui) {
       rgb_matrix_set_color(LED_LWIN, RGB_PURPLE); //light up Win key when disabled
 
-      #ifdef GAMING_MODE_ENABLE
+      #ifdef GAMING_MODE
         // highlight gaming keys only when gamingmode is enabled
         if(is_gaming_mode) { 
           rgb_matrix_set_color(LED_W, RGB_CHARTREUSE); //light up gaming keys with WSAD higlighted
@@ -224,24 +244,23 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
     // highlight fn keys
     // esc = 0, backspace = 86
-static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};    switch(get_highest_layer(layer_state)){  // special handling per layer
-static uint8_t l3_functions[1] = {LED_F};
-      case 3:  //layer one
-        break;
-      case 2:
-        for (uint8_t i = 0; i < sizeof(l3_functions) / sizeof(l3_functions[0]); i++) {
-             RGB_MATRIX_INDICATOR_SET_COLOR(l3_functions[i], 255, 0, 0);
-         }
+  switch(get_highest_layer(layer_state)) {  // special handling per layer
+    case 3:  //layer one
       break;
-      
-      case 1:
-        for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+    case 2:
+      for (uint8_t i = 0; i < sizeof(l3_functions) / sizeof(l3_functions[0]); i++) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(l3_functions[i], 255, 0, 0);
         }
-        break;
-      default:
-        break;
+    break;
+
+    case 1:
+      for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
+          RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+      }
       break;
+    default:
+      break;
+    break;
     }
 }
 #endif // RGB_MATRIX_ENALBED
@@ -291,6 +310,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           print("fdg1 keycode");
         #endif
         SEND_STRING(".ad.drgueldener.de");
+      }
+      return false;
+      break;
+
+    case TOG_ARROW:
+      if (record->event.pressed) {
+        #ifdef DEBUG_ENABLE
+          print("arrow mode keycode");
+        #endif
+        is_arrow_mode = !is_arrow_mode;
       }
       return false;
       break;
