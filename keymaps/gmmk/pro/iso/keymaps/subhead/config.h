@@ -35,6 +35,8 @@
     #define RGB_IDLE_BREATHE
     // fade in when we have been suspended
     #define RGB_FADE_IN
+    #define GAMING_MODE_ENABLE
+
 #endif
 
 // IDLE timeouts configuration
@@ -42,8 +44,11 @@
     // default timeout minutes
     #define TIMEOUT_THRESHOLD_DEFAULT 15
     // upper limits (2 hours and 10 minutes -- no rgb indicators above this value)
-    #define TIMEOUT_THRESHOLD_MAX 140 
+    #define TIMEOUT_THRESHOLD_MAX 140
 #endif
 
-#define GAMING_MODE_ENABLE
+#ifdef CONSOLE_ENABLE
+    #define CONSOLE_ENABLED
+    #define DEBUG_ENABLE
+#endif
 

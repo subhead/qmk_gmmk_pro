@@ -16,14 +16,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 #include "rgb_matrix_map.h"
+//#include "subhead.h"
+
+/*
+print("string"): Print a simple string.
+uprintf("%s string", var): Print a formatted string
+dprint("string") Print a simple string, but only when debug mode is enabled
+dprintf("%s string", var): Print a formatted string, but only when debug mode is enabled
+*/
+#include "print.h"
 
 
 #define ARRAYSIZE(arr) sizeof(arr) / sizeof(arr[0])
 
 // KEYCODES
 enum custom_keycodes {
-  FOOBAR = SAFE_RANGE,  // Placeholder dont know why needed otherwise it wont work
-  KC_WINLCK             //Toggles Win key on and off
+  __PLACEHOLDER__ = SAFE_RANGE,  // Placeholder dont know why needed otherwise it wont work
+  KC_TOGGM,
+  KC_WINLCK,             //Toggles Win key on and off
+  KC_TEST,
+  FOO              // Toggles gaming mode
 };
 
 // clang-format off
@@ -62,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
-        _______, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
+        _______, _______, _______, RGB_HUI, KC_TEST, KC_TOGGM, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
         _______, KC_WINLCK, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
 
@@ -78,6 +90,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 // clang-format on
+
+
+static bool is_gaming_mode = true;
+
+void keyboard_post_init_user(void) {
+  #ifdef DEBUG_ENABLE
+    // Customise these values to desired behaviour
+    debug_enable=true;
+    //debug_matrix=true;
+    debug_keyboard=true;
+    //debug_mouse=true;
+  #endif
+}
 
 // START ROTARY KNOB
 // ripped from: https://github.com/ForsakenRei/qmk_gmmk_pro/blob/main/gmmk/pro/ansi/keymaps/shigure/keymap.c
@@ -154,33 +179,43 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         }
     }
 
+    // highlight G key when gaming mode is disabled
+    #ifdef GAMING_MODE_ENABLE
+      if(!is_gaming_mode) {
+        rgb_matrix_set_color(LED_G, RGB_PURPLE2);
+      }
+    #endif
+
     // Disable WIN Key and light them up also light up WASD gaming keys
     if (keymap_config.no_gui) {
-      rgb_matrix_set_color(LED_LWIN, RGB_RED); //light up Win key when disabled
+      rgb_matrix_set_color(LED_LWIN, RGB_PURPLE); //light up Win key when disabled
 
       #ifdef GAMING_MODE_ENABLE
-        rgb_matrix_set_color(LED_W, RGB_CHARTREUSE); //light up gaming keys with WSAD higlighted
-        rgb_matrix_set_color(LED_S, RGB_CHARTREUSE);
-        rgb_matrix_set_color(LED_A, RGB_CHARTREUSE);
-        rgb_matrix_set_color(LED_D, RGB_CHARTREUSE);
-        rgb_matrix_set_color(LED_Q, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_E, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_R, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_TAB, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_F, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_Z, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_X, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_C, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_V, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_SPC, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_LCTL, RGB_ORANGE2);
-        rgb_matrix_set_color(LED_LSFT, RGB_ORANGE2);
+        // highlight gaming keys only when gamingmode is enabled
+        if(is_gaming_mode) { 
+          rgb_matrix_set_color(LED_W, RGB_CHARTREUSE); //light up gaming keys with WSAD higlighted
+          rgb_matrix_set_color(LED_S, RGB_CHARTREUSE);
+          rgb_matrix_set_color(LED_A, RGB_CHARTREUSE);
+          rgb_matrix_set_color(LED_D, RGB_CHARTREUSE);
+          rgb_matrix_set_color(LED_Q, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_E, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_R, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_TAB, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_F, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_Z, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_X, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_C, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_V, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_SPC, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_LCTL, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_LSFT, RGB_ORANGE2);
+        }
       #endif
     }
 
     // highlight fn keys
     // esc = 0, backspace = 86
-static uint8_t l2_functions[26] = {LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};    switch(get_highest_layer(layer_state)){  // special handling per layer
+static uint8_t l2_functions[29] = {LED_LWIN, LED_C, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};    switch(get_highest_layer(layer_state)){  // special handling per layer
        case 2:  //layer one
          break;
        case 1:
@@ -197,15 +232,37 @@ static uint8_t l2_functions[26] = {LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2,
 
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
 
+  #ifdef CONSOLE_ENABLED
+    uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
+  #endif 
+
+  switch (keycode) {
+    
+    case KC_TEST:
+      if(record->event.pressed) {
+        print("test keycode");
+      }
+      return false;
+      break;
+  
     // WinLock toggle
     case KC_WINLCK:
       if (record->event.pressed) {
-        keymap_config.no_gui = !keymap_config.no_gui; //toggle status
+        print("winlock enabled");
+        keymap_config.no_gui = !keymap_config.no_gui;    
       }
-      return true;
+      return false;
+      break;
       
+    case KC_TOGGM:
+      if (record->event.pressed) {
+        print("gaming keycode pressed");
+        is_gaming_mode = !is_gaming_mode;
+      }
+      return false;
+      break;
+
     default:
       return true; // Process all other keycodes normally
   }
