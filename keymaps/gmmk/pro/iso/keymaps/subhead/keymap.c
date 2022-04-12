@@ -93,11 +93,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-// so globals
-static bool is_gaming_mode = true;
-static bool is_arrow_mode = true;
+// GLOBALS
+#ifdef GAMING_MODE
+  static bool is_gaming_mode = true;
+#endif
+
 //static bool is_gaming_mode_led_on = false;
 #ifdef ARROW_MODE
+  static bool is_arrow_mode = true;
   static uint8_t arrow_keys[4] = {94, 80, 98, 96};
 #endif
 
@@ -120,43 +123,39 @@ void keyboard_post_init_user(void) {
 // ripped from: https://github.com/ForsakenRei/qmk_gmmk_pro/blob/main/gmmk/pro/ansi/keymaps/shigure/keymap.c
 #ifdef ENCODER_ENABLE // Encoder Functionality
 bool encoder_update_user(uint8_t index, bool clockwise)
-{
+{ 
+  uint8_t mods_state = get_mods();
   if (clockwise)
   {
-    if (keyboard_report->mods & MOD_BIT(KC_LCTL))
-    { // if holding Left Ctrl, scroll up and down
+    if (mods_state & MOD_BIT(KC_LCTL)) { // if holding Left Ctrl, scroll up and down
       unregister_mods(MOD_BIT(KC_LCTL));
       register_code(KC_PGDN);
       register_mods(MOD_BIT(KC_LCTL));
     }
-    else if (keyboard_report->mods & MOD_BIT(KC_LSFT))
-    { // if you are holding L shift, scroll left and right
+    else if (mods_state & MOD_BIT(KC_LSFT)) { // if you are holding L shift, scroll left and right
       tap_code16(KC_WH_R);
     }
-    else if (keyboard_report->mods & MOD_BIT(KC_LALT))
-    { // if holding Left Alt, change media next track
-      tap_code(KC_MEDIA_NEXT_TRACK);
+    else if (mods_state & MOD_BIT(KC_LALT)) { // if holding Left Alt, tab throu open browser tabs
+      //tap_code(KC_MEDIA_NEXT_TRACK);
+      tap_code16(C(KC_TAB));
     }
-    else
-    {
+    else {
       tap_code(KC_VOLU); // Otherwise it just changes volume
     }
   }
   else
   {
-    if (keyboard_report->mods & MOD_BIT(KC_LCTL))
-    {
+    if (mods_state & MOD_BIT(KC_LCTL))  {
       unregister_mods(MOD_BIT(KC_LCTL));
       register_code(KC_PGUP);
       register_mods(MOD_BIT(KC_LCTL));
-    }
-    else if (keyboard_report->mods & MOD_BIT(KC_LSFT))
-    {
+    } 
+    else if (mods_state & MOD_BIT(KC_LSFT)) {
       tap_code16(KC_WH_L);
     }
-    else if (keyboard_report->mods & MOD_BIT(KC_LALT))
-    {
-      tap_code(KC_MEDIA_PREV_TRACK);
+    else if (mods_state & MOD_BIT(KC_LALT)) {
+      //tap_code(KC_MEDIA_PREV_TRACK);
+      tap_code16(S(C(KC_TAB)));
     }
     else
     {
@@ -203,21 +202,9 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       }
     #endif
 
-    // highlight G key when gaming mode is disabled
-    /*
-    #ifdef GAMING_MODE
-      if(!is_gaming_mode) {
-        for(uint8_t g; g < 3; g++) {
-          rgb_matrix_set_color(LED_G, RGB_PURPLE2);
-        }
-      }
-    #endif
-    */
-
-
     // Disable WIN Key and light them up also light up WASD gaming keys
     if (keymap_config.no_gui) {
-      rgb_matrix_set_color(LED_LWIN, RGB_PURPLE); //light up Win key when disabled
+      rgb_matrix_set_color(LED_LWIN, RGB_RED); //light up Win key when disabled
 
       #ifdef GAMING_MODE
         // highlight gaming keys only when gamingmode is enabled
@@ -247,6 +234,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
   switch(get_highest_layer(layer_state)) {  // special handling per layer
     case 3:  //layer one
       break;
+
     case 2:
       for (uint8_t i = 0; i < sizeof(l3_functions) / sizeof(l3_functions[0]); i++) {
             RGB_MATRIX_INDICATOR_SET_COLOR(l3_functions[i], 255, 0, 0);

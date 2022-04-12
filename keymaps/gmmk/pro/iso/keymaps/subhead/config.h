@@ -35,7 +35,9 @@
     #define RGB_IDLE_BREATHE
     // fade in when we have been suspended
     #define RGB_FADE_IN
+    // highlight WASD keys
     #define GAMING_MODE
+    // highlight arrow keys
     #define ARROW_MODE
 
 #endif
