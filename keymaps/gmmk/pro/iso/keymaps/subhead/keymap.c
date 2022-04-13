@@ -15,8 +15,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include QMK_KEYBOARD_H
+#include "sendstring_german.h"
 #include "rgb_matrix_map.h"
-//#include "subhead.h"
+#include "subhead.h"
+#include "strings.c"
+
 
 /*
 print("string"): Print a simple string.
@@ -31,13 +34,14 @@ dprintf("%s string", var): Print a formatted string, but only when debug mode is
 
 // KEYCODES
 enum custom_keycodes {
-  __PLACEHOLDER__ = SAFE_RANGE,  // Placeholder dont know why needed otherwise it wont work
-  KC_TOGGM,
-  KC_WINLCK,             //Toggles Win key on and off
-  KC_TEST,
-  KC_FDG1,
-  TOG_ARROW,
-  FOO              // Toggles gaming mode
+  __PLACEHOLDER__ = SAFE_RANGE,   // Placeholder dont know why needed otherwise it wont work
+  KC_TOGGM,                       // Toggles gaming mode on and off (hightligh of WASD and some other gaming related keys)
+  KC_WINLCK,                      // Toggles Winkey lock on and off
+  KC_TEST,                        // Playeholder function
+  KC_FDG1,                        // fdg domain suffix
+  KC_3D_AR,                       // 3dpb auto reply text
+  TOG_ARROW,                      // Toggles highlight of arrow keys
+  FOO
 };
 
 // clang-format off
@@ -70,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT, KC_NUBS, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          KC_RSFT, KC_UP,   KC_END,
         KC_LCTL, KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(1),   KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
     ),
-
+    // function layer with the most used hotkeys/functions
     [1] = LAYOUT(
         RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
@@ -79,11 +83,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, RGB_HUI, _______, KC_TOGGM, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
         _______, KC_WINLCK, _______,                            _______,                            MO(2), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
-
+    // configuration layer to access toggles etc
     [2] = LAYOUT(
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
+        _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
+        _______, _______, _______,                            _______,                            _______, _______, MO(3), _______, _______, _______
+    ),
+    // work layer with txt shotcuts etc
+    [3] = LAYOUT(
+        RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
+        _______, _______, _______, _______, KC_3D_AR, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
         _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______, _______
@@ -106,7 +119,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #ifdef RGB_MATRIX_ENABLE
   static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
-  static uint8_t l3_functions[1] = {LED_F};
+  static uint8_t l3_functions[3] = {LED_ESC, LED_F, LED_L4};
 #endif
 
 void keyboard_post_init_user(void) {
@@ -188,7 +201,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       for (uint8_t i = 0; i < sizeof(left_side_leds) / sizeof(left_side_leds[0]); i++) {
         rgb_matrix_set_color(left_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
         rgb_matrix_set_color(right_side_leds[i], tempRGB.r, tempRGB.g, tempRGB.b);
-        RGB_MATRIX_INDICATOR_SET_COLOR(3, tempRGB.r, tempRGB.g, tempRGB.b);
+        RGB_MATRIX_INDICATOR_SET_COLOR(LED_CAPS, tempRGB.r, tempRGB.g, tempRGB.b);
       }
     }
 
@@ -196,11 +209,22 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // arrow mode highlight arrow keys
     #ifdef ARROW_MODE
       if(is_arrow_mode) {
+        // get curretn HSV
+        /*
+        HSV curHSV;
+        RGB newRGB;
+        curHSV = rgb_matrix_get_hsv();
+        newRGB = hsv_to_rgb()
+        */
+
+        //uprintf("%s", curHSV);
         for (uint8_t i = 0; i < sizeof(arrow_keys) / sizeof(arrow_keys[0]); i++) {
-          RGB_MATRIX_INDICATOR_SET_COLOR(arrow_keys[i], 255, 255, 255);
+          rgb_matrix_set_color(arrow_keys[i], RGB_WHITE);
         }
       }
     #endif
+
+    //rgblight_get_val())
 
     // Disable WIN Key and light them up also light up WASD gaming keys
     if (keymap_config.no_gui) {
@@ -297,7 +321,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         #ifdef DEBUG_ENABLE
           print("fdg1 keycode");
         #endif
-        SEND_STRING(".ad.drgueldener.de");
+        SEND_STRING(STR_FDG_DOMAIN);
       }
       return false;
       break;
@@ -311,6 +335,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+
+    // 3dpb related hotkeys
+    case KC_3D_AR:
+      if(record->event.pressed) {
+        SEND_STRING(STR_3DPB_AUTOREPLY);
+      }
+      return false;
+      break;
+
+    case RESET:  // when activating RESET mode for flashing
+      if (record->event.pressed) {
+          rgb_matrix_set_color_all(63, 0, 0);
+          rgb_matrix_driver.flush();
+      }
+      return true;
 
     default:
       return true; // Process all other keycodes normally
