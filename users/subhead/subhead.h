@@ -13,13 +13,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+//#pragma once
 
-#ifdef GAMING_MODE_ENALBE
-	void toggle_gaming_mode(void);
-	bool is_gaming_mode = false;
-
-	void toggle_gaming_mode(void) {
-		is_gaming_mode = !is_gaming_mode;
-	}
-#endif
+//#define TXT_3DPB_AUTOREPLY "Vielen Dank für deine Nachricht. Ich werde mich so schnell wie möglich bei dir melden."

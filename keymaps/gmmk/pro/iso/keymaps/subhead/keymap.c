@@ -41,6 +41,13 @@ enum custom_keycodes {
   KC_FDG1,                        // fdg domain suffix
   KC_3D_AR,                       // 3dpb auto reply text
   TOG_ARROW,                      // Toggles highlight of arrow keys
+  EMO_SHRUG,
+  EMO_CONFUSE,
+  EMO_TEARS,
+  EMO_NERVOUS,
+  EMO_JOY,
+  EMO_SAD,
+  EMO_FLYSAFE,
   FOO
 };
 
@@ -95,7 +102,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // work layer with txt shotcuts etc
     [3] = LAYOUT(
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
+        _______, EMO_SHRUG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, KC_3D_AR, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
@@ -350,6 +357,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           rgb_matrix_driver.flush();
       }
       return true;
+
+    #ifdef EMOTICON_ENABLE
+      case EMO_SHRUG:
+        if (record -> event.pressed) SEND_STRING(STR_EMO_SHRUG);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_CONFUSE:
+        if (record -> event.pressed) SEND_STRING(STR_EMO_CONFUSE);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_TEARS:
+        if (record -> event.pressed) SEND_STRING(STR_EMO_TEARS);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_NERVOUS:
+        if (record -> event.pressed) SEND_STRING(STR_EMO_NERVOUS);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_JOY:
+        if (record -> event.pressed) SEND_STRING(STR_EMO_JOY);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_SAD:
+        if (record -> event.pressed) SEND_STRING(STR_EMO_SAD);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_FLYSAFE:
+        if (record -> event.pressed) SEND_STRING(STR_EMO_FLYSAFE);
+        else unregister_code16(keycode);
+        return false;
+    #endif // EMOTICON_ENABLE
 
     default:
       return true; // Process all other keycodes normally

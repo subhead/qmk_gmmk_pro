@@ -19,6 +19,9 @@
 // TT set to two taps
 #define TAPPING_TOGGLE 3
 
+// Emoticon Support
+#define EMOTICON_ENABLE
+
 // RGB Matrix configuration
 #ifdef RGB_MATRIX_ENABLE
     // RGB startup effect
@@ -39,7 +42,6 @@
     #define GAMING_MODE
     // highlight arrow keys
     #define ARROW_MODE
-
 #endif
 
 // IDLE timeouts configuration
