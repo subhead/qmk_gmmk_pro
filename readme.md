@@ -14,7 +14,7 @@ This is a custom GMMK Pro configuration for the QMK firmware.
 - Added GAMING_MODE_ENABLE to config.h for enabling/disabling gaming mode
 
 # TODO
-- Add toggle for game mode for on the fly enabling/diasbling
+- Add toggle for game mode for on the fly enabling/disabling
 - Add NumPad
 - Add NumPadLock
 
