@@ -19,18 +19,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "rgb_matrix_map.h"
 #include "subhead.h"
 #include "strings.c"
+#include "private.c"
 
 
-/*
-print("string"): Print a simple string.
-uprintf("%s string", var): Print a formatted string
-dprint("string") Print a simple string, but only when debug mode is enabled
-dprintf("%s string", var): Print a formatted string, but only when debug mode is enabled
-*/
-#include "print.h"
+#ifdef CONSOLE_ENABLE
+  /*
+  print("string"): Print a simple string.
+  uprintf("%s string", var): Print a formatted string
+  dprint("string") Print a simple string, but only when debug mode is enabled
+  dprintf("%s string", var): Print a formatted string, but only when debug mode is enabled
+  */
+  #include "print.h"
+#endif
 
 
 #define ARRAYSIZE(arr) sizeof(arr) / sizeof(arr[0])
+
+// LAYERS
+enum custom_user_layers {
+    _BASE,
+    _UTIL,
+    _RGB,
+    _MACRO
+};
 
 // KEYCODES
 enum custom_keycodes {
@@ -41,8 +52,37 @@ enum custom_keycodes {
   KC_FDG1,                        // fdg domain suffix
   KC_3D_AR,                       // 3dpb auto reply text
   TOG_ARROW,                      // Toggles highlight of arrow keys
+  ST_CBRACK,                      // curly brackets
+  ST_ABRACK,                      // angual brackets
+  ST_SBRACK,                      // square brackets
+  ST_DBSLASH,                     // double backslash
+  ST_DSLASH,                      // double slash
+  EMO_SHRUG,
+  EMO_CONFUSE,
+  EMO_TEARS,
+  EMO_NERVOUS,
+  EMO_JOY,
+  EMO_SAD,
+  EMO_FLYSAFE,
   FOO
 };
+
+// GLOBALS
+#ifdef GAMING_MODE
+  static bool is_gaming_mode = true;
+#endif
+
+//static bool is_gaming_mode_led_on = false;
+#ifdef ARROW_MODE
+  static bool is_arrow_mode = true;
+  static uint8_t arrow_keys[4] = {94, 80, 98, 96};
+#endif
+
+#ifdef RGB_MATRIX_ENABLE
+  static uint8_t l_base_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
+  static uint8_t l_util_functions[3] = {LED_ESC, LED_F, LED_L4};
+  static uint8_t l_macro_functions[3] = {LED_ESC, LED_R, LED_F};
+#endif
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -66,36 +106,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // This keyboard defaults to 6KRO instead of NKRO for compatibility reasons (some KVMs and BIOSes are incompatible with NKRO).
     // Since this is, among other things, a "gaming" keyboard, a key combination to enable NKRO on the fly is provided for convenience.
     // Press Fn+N to toggle between 6KRO and NKRO. This setting is persisted to the EEPROM and thus persists between restarts.
-    [0] = LAYOUT(
+    [_BASE] = LAYOUT(
         KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_PSCR,          KC_MUTE,
         KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC,          KC_DEL,
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC,                   KC_PGUP,
         KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,           KC_PGDN,
         KC_LSFT, KC_NUBS, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          KC_RSFT, KC_UP,   KC_END,
-        KC_LCTL, KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(1),   KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
+        KC_LCTL, KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(_UTIL),   KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
     ),
     // function layer with the most used hotkeys/functions
-    [1] = LAYOUT(
+    [_UTIL] = LAYOUT(
         RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
         _______, _______, _______, RGB_HUI, _______, KC_TOGGM, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
-        _______, KC_WINLCK, _______,                            _______,                            MO(2), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
+        _______, KC_WINLCK, _______,                            _______,                            MO(_RGB), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
     // configuration layer to access toggles etc
-    [2] = LAYOUT(
+    [_RGB] = LAYOUT(
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
-        _______, _______, _______,                            _______,                            _______, _______, MO(3), _______, _______, _______
+        _______, _______, _______,                            _______,                            _______, _______, MO(_MACRO), _______, _______, _______
     ),
     // work layer with txt shotcuts etc
-    [3] = LAYOUT(
+    [_MACRO] = LAYOUT(
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
+        _______, EMO_SHRUG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, KC_3D_AR, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
@@ -105,22 +145,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 // clang-format on
-
-// GLOBALS
-#ifdef GAMING_MODE
-  static bool is_gaming_mode = true;
-#endif
-
-//static bool is_gaming_mode_led_on = false;
-#ifdef ARROW_MODE
-  static bool is_arrow_mode = true;
-  static uint8_t arrow_keys[4] = {94, 80, 98, 96};
-#endif
-
-#ifdef RGB_MATRIX_ENABLE
-  static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
-  static uint8_t l3_functions[3] = {LED_ESC, LED_F, LED_L4};
-#endif
 
 void keyboard_post_init_user(void) {
   #ifdef DEBUG_ENABLE
@@ -138,8 +162,7 @@ void keyboard_post_init_user(void) {
 bool encoder_update_user(uint8_t index, bool clockwise)
 { 
   uint8_t mods_state = get_mods();
-  if (clockwise)
-  {
+  if (clockwise) {
     if (mods_state & MOD_BIT(KC_LCTL)) { // if holding Left Ctrl, scroll up and down
       unregister_mods(MOD_BIT(KC_LCTL));
       register_code(KC_PGDN);
@@ -156,8 +179,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
       tap_code(KC_VOLU); // Otherwise it just changes volume
     }
   }
-  else
-  {
+  else {
     if (mods_state & MOD_BIT(KC_LCTL))  {
       unregister_mods(MOD_BIT(KC_LCTL));
       register_code(KC_PGUP);
@@ -170,8 +192,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
       //tap_code(KC_MEDIA_PREV_TRACK);
       tap_code16(S(C(KC_TAB)));
     }
-    else
-    {
+    else {
       tap_code(KC_VOLD);
     }
   }
@@ -256,18 +277,24 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // highlight fn keys
     // esc = 0, backspace = 86
   switch(get_highest_layer(layer_state)) {  // special handling per layer
-    case 3:  //layer one
+    case 4:  //layer one
       break;
-
-    case 2:
-      for (uint8_t i = 0; i < sizeof(l3_functions) / sizeof(l3_functions[0]); i++) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(l3_functions[i], 255, 0, 0);
+    // macro layer
+    case 3:
+      for (uint8_t i = 0; i < sizeof(l_macro_functions) / sizeof(l_macro_functions[0]); i++) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(l_macro_functions[i], 255, 0, 0);
         }
     break;
-
+    // util layer
+    case 2:
+      for (uint8_t i = 0; i < sizeof(l_util_functions) / sizeof(l_util_functions[0]); i++) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(l_util_functions[i], 255, 0, 0);
+        }
+    break;
+    // base layer
     case 1:
-      for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
-          RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+      for (uint8_t i = 0; i < sizeof(l_base_functions) / sizeof(l_base_functions[0]); i++) {
+          RGB_MATRIX_INDICATOR_SET_COLOR(l_base_functions[i], 255, 0, 0);
       }
       break;
     default:
@@ -298,9 +325,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // WinLock toggle
     case KC_WINLCK:
       if (record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("winlock keycode");
-        #endif
         keymap_config.no_gui = !keymap_config.no_gui;    
       }
       return false;
@@ -308,29 +332,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       
     case KC_TOGGM:
       if (record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("gaming mode keycode");
-        #endif
         is_gaming_mode = !is_gaming_mode;
       }
       return false;
       break;
 
     case KC_FDG1:
-      if(record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("fdg1 keycode");
-        #endif
-        SEND_STRING(STR_FDG_DOMAIN);
-      }
+      if(record->event.pressed) SEND_STRING(STR_FDG_DOMAIN);
+      else unregister_code16(keycode);
       return false;
       break;
 
     case TOG_ARROW:
       if (record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("arrow mode keycode");
-        #endif
         is_arrow_mode = !is_arrow_mode;
       }
       return false;
@@ -338,9 +352,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // 3dpb related hotkeys
     case KC_3D_AR:
-      if(record->event.pressed) {
-        SEND_STRING(STR_3DPB_AUTOREPLY);
-      }
+      if(record->event.pressed) SEND_STRING(STR_3DPB_AUTOREPLY);
+      else unregister_code16(keycode);
       return false;
       break;
 
@@ -350,6 +363,64 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           rgb_matrix_driver.flush();
       }
       return true;
+
+    // brackets/slashes
+    case ST_CBRACK:
+      if (record->event.pressed) SEND_STRING(STR_CURLY_BRACKETS);
+      else unregister_code16(keycode);
+      return false;
+    
+    case ST_SBRACK:
+      if (record->event.pressed) SEND_STRING(STR_SQUARE_BRACKETS);
+      else unregister_code16(keycode);
+      return false;
+
+    case ST_ABRACK:
+      if (record->event.pressed) SEND_STRING(STR_ANGLE_BRACKETS);
+      else unregister_code16(keycode);
+      return false;
+
+    case ST_DSLASH:
+      if (record->event.pressed) SEND_STRING(STR_DOUBLE_SLASHES);
+      else unregister_code16(keycode);
+      return false;
+
+    case ST_DBSLASH:
+      if (record->event.pressed) SEND_STRING(STR_DOUBLE_BSLASHES);
+      else unregister_code16(keycode);
+      return false;
+
+    // emoticons
+    #ifdef EMOTICON_ENABLE
+      case EMO_SHRUG:
+        if (record->event.pressed) SEND_STRING(STR_EMO_SHRUG);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_CONFUSE:
+        if (record->event.pressed) SEND_STRING(STR_EMO_CONFUSE);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_TEARS:
+        if (record->event.pressed) SEND_STRING(STR_EMO_TEARS);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_NERVOUS:
+        if (record->event.pressed) SEND_STRING(STR_EMO_NERVOUS);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_JOY:
+        if (record->event.pressed) SEND_STRING(STR_EMO_JOY);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_SAD:
+        if (record->event.pressed) SEND_STRING(STR_EMO_SAD);
+        else unregister_code16(keycode);
+        return false;
+      case EMO_FLYSAFE:
+        if (record->event.pressed) SEND_STRING(STR_EMO_FLYSAFE);
+        else unregister_code16(keycode);
+        return false;
+    #endif // EMOTICON_ENABLE
 
     default:
       return true; // Process all other keycodes normally
