@@ -79,8 +79,9 @@ enum custom_keycodes {
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-  static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
-  static uint8_t l3_functions[3] = {LED_ESC, LED_F, LED_L4};
+  static uint8_t l_base_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
+  static uint8_t l_util_functions[3] = {LED_ESC, LED_F, LED_L4};
+  static uint8_t l_macro_functions[3] = {LED_ESC, LED_R, LED_F};
 #endif
 
 // clang-format off
@@ -279,18 +280,24 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // highlight fn keys
     // esc = 0, backspace = 86
   switch(get_highest_layer(layer_state)) {  // special handling per layer
-    case 3:  //layer one
+    case 4:  //layer one
       break;
-
-    case 2:
-      for (uint8_t i = 0; i < sizeof(l3_functions) / sizeof(l3_functions[0]); i++) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(l3_functions[i], 255, 0, 0);
+    // macro layer
+    case 3:
+      for (uint8_t i = 0; i < sizeof(l_macro_functions) / sizeof(l_macro_functions[0]); i++) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(l_macro_functions[i], 255, 0, 0);
         }
     break;
-
+    // util layer
+    case 2:
+      for (uint8_t i = 0; i < sizeof(l_util_functions) / sizeof(l_util_functions[0]); i++) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(l_util_functions[i], 255, 0, 0);
+        }
+    break;
+    // base layer
     case 1:
-      for (uint8_t i = 0; i < sizeof(l2_functions) / sizeof(l2_functions[0]); i++) {
-          RGB_MATRIX_INDICATOR_SET_COLOR(l2_functions[i], 255, 0, 0);
+      for (uint8_t i = 0; i < sizeof(l_base_functions) / sizeof(l_base_functions[0]); i++) {
+          RGB_MATRIX_INDICATOR_SET_COLOR(l_base_functions[i], 255, 0, 0);
       }
       break;
     default:
