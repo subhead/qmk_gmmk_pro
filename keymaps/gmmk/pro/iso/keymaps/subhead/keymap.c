@@ -162,8 +162,7 @@ void keyboard_post_init_user(void) {
 bool encoder_update_user(uint8_t index, bool clockwise)
 { 
   uint8_t mods_state = get_mods();
-  if (clockwise)
-  {
+  if (clockwise) {
     if (mods_state & MOD_BIT(KC_LCTL)) { // if holding Left Ctrl, scroll up and down
       unregister_mods(MOD_BIT(KC_LCTL));
       register_code(KC_PGDN);
@@ -180,8 +179,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
       tap_code(KC_VOLU); // Otherwise it just changes volume
     }
   }
-  else
-  {
+  else {
     if (mods_state & MOD_BIT(KC_LCTL))  {
       unregister_mods(MOD_BIT(KC_LCTL));
       register_code(KC_PGUP);
@@ -194,8 +192,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
       //tap_code(KC_MEDIA_PREV_TRACK);
       tap_code16(S(C(KC_TAB)));
     }
-    else
-    {
+    else {
       tap_code(KC_VOLD);
     }
   }
@@ -328,9 +325,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // WinLock toggle
     case KC_WINLCK:
       if (record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("winlock keycode");
-        #endif
         keymap_config.no_gui = !keymap_config.no_gui;    
       }
       return false;
@@ -338,29 +332,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       
     case KC_TOGGM:
       if (record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("gaming mode keycode");
-        #endif
         is_gaming_mode = !is_gaming_mode;
       }
       return false;
       break;
 
     case KC_FDG1:
-      if(record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("fdg1 keycode");
-        #endif
-        SEND_STRING(STR_FDG_DOMAIN);
-      }
+      if(record->event.pressed) SEND_STRING(STR_FDG_DOMAIN);
+      else unregister_code16(keycode);
       return false;
       break;
 
     case TOG_ARROW:
       if (record->event.pressed) {
-        #ifdef DEBUG_ENABLE
-          print("arrow mode keycode");
-        #endif
         is_arrow_mode = !is_arrow_mode;
       }
       return false;
@@ -368,9 +352,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // 3dpb related hotkeys
     case KC_3D_AR:
-      if(record->event.pressed) {
-        SEND_STRING(STR_3DPB_AUTOREPLY);
-      }
+      if(record->event.pressed) SEND_STRING(STR_3DPB_AUTOREPLY);
+      else unregister_code16(keycode);
       return false;
       break;
 
@@ -383,58 +366,58 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     // brackets/slashes
     case ST_CBRACK:
-      if (record -> event.pressed) SEND_STRING(STR_CURLY_BRACKETS);
+      if (record->event.pressed) SEND_STRING(STR_CURLY_BRACKETS);
       else unregister_code16(keycode);
       return false;
     
     case ST_SBRACK:
-      if (record -> event.pressed) SEND_STRING(STR_SQUARE_BRACKETS);
+      if (record->event.pressed) SEND_STRING(STR_SQUARE_BRACKETS);
       else unregister_code16(keycode);
       return false;
 
     case ST_ABRACK:
-      if (record -> event.pressed) SEND_STRING(STR_ANGLE_BRACKETS);
+      if (record->event.pressed) SEND_STRING(STR_ANGLE_BRACKETS);
       else unregister_code16(keycode);
       return false;
 
     case ST_DSLASH:
-      if (record -> event.pressed) SEND_STRING(STR_DOUBLE_SLASHES);
+      if (record->event.pressed) SEND_STRING(STR_DOUBLE_SLASHES);
       else unregister_code16(keycode);
       return false;
 
     case ST_DBSLASH:
-      if (record -> event.pressed) SEND_STRING(STR_DOUBLE_BSLASHES);
+      if (record->event.pressed) SEND_STRING(STR_DOUBLE_BSLASHES);
       else unregister_code16(keycode);
       return false;
 
     // emoticons
     #ifdef EMOTICON_ENABLE
       case EMO_SHRUG:
-        if (record -> event.pressed) SEND_STRING(STR_EMO_SHRUG);
+        if (record->event.pressed) SEND_STRING(STR_EMO_SHRUG);
         else unregister_code16(keycode);
         return false;
       case EMO_CONFUSE:
-        if (record -> event.pressed) SEND_STRING(STR_EMO_CONFUSE);
+        if (record->event.pressed) SEND_STRING(STR_EMO_CONFUSE);
         else unregister_code16(keycode);
         return false;
       case EMO_TEARS:
-        if (record -> event.pressed) SEND_STRING(STR_EMO_TEARS);
+        if (record->event.pressed) SEND_STRING(STR_EMO_TEARS);
         else unregister_code16(keycode);
         return false;
       case EMO_NERVOUS:
-        if (record -> event.pressed) SEND_STRING(STR_EMO_NERVOUS);
+        if (record->event.pressed) SEND_STRING(STR_EMO_NERVOUS);
         else unregister_code16(keycode);
         return false;
       case EMO_JOY:
-        if (record -> event.pressed) SEND_STRING(STR_EMO_JOY);
+        if (record->event.pressed) SEND_STRING(STR_EMO_JOY);
         else unregister_code16(keycode);
         return false;
       case EMO_SAD:
-        if (record -> event.pressed) SEND_STRING(STR_EMO_SAD);
+        if (record->event.pressed) SEND_STRING(STR_EMO_SAD);
         else unregister_code16(keycode);
         return false;
       case EMO_FLYSAFE:
-        if (record -> event.pressed) SEND_STRING(STR_EMO_FLYSAFE);
+        if (record->event.pressed) SEND_STRING(STR_EMO_FLYSAFE);
         else unregister_code16(keycode);
         return false;
     #endif // EMOTICON_ENABLE
