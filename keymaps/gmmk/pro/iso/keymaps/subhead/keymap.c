@@ -19,15 +19,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "rgb_matrix_map.h"
 #include "subhead.h"
 #include "strings.c"
+#include "private.c"
 
 
-/*
-print("string"): Print a simple string.
-uprintf("%s string", var): Print a formatted string
-dprint("string") Print a simple string, but only when debug mode is enabled
-dprintf("%s string", var): Print a formatted string, but only when debug mode is enabled
-*/
-#include "print.h"
+#ifdef CONSOLE_ENABLE
+  /*
+  print("string"): Print a simple string.
+  uprintf("%s string", var): Print a formatted string
+  dprint("string") Print a simple string, but only when debug mode is enabled
+  dprintf("%s string", var): Print a formatted string, but only when debug mode is enabled
+  */
+  #include "print.h"
+#endif
 
 
 #define ARRAYSIZE(arr) sizeof(arr) / sizeof(arr[0])
@@ -58,6 +61,22 @@ enum custom_keycodes {
   EMO_FLYSAFE,
   FOO
 };
+
+// GLOBALS
+#ifdef GAMING_MODE
+  static bool is_gaming_mode = true;
+#endif
+
+//static bool is_gaming_mode_led_on = false;
+#ifdef ARROW_MODE
+  static bool is_arrow_mode = true;
+  static uint8_t arrow_keys[4] = {94, 80, 98, 96};
+#endif
+
+#ifdef RGB_MATRIX_ENABLE
+  static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
+  static uint8_t l3_functions[3] = {LED_ESC, LED_F, LED_L4};
+#endif
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -120,22 +139,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 // clang-format on
-
-// GLOBALS
-#ifdef GAMING_MODE
-  static bool is_gaming_mode = true;
-#endif
-
-//static bool is_gaming_mode_led_on = false;
-#ifdef ARROW_MODE
-  static bool is_arrow_mode = true;
-  static uint8_t arrow_keys[4] = {94, 80, 98, 96};
-#endif
-
-#ifdef RGB_MATRIX_ENABLE
-  static uint8_t l2_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
-  static uint8_t l3_functions[3] = {LED_ESC, LED_F, LED_L4};
-#endif
 
 void keyboard_post_init_user(void) {
   #ifdef DEBUG_ENABLE
