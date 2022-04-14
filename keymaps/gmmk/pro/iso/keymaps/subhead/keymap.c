@@ -52,6 +52,11 @@ enum custom_keycodes {
   KC_FDG1,                        // fdg domain suffix
   KC_3D_AR,                       // 3dpb auto reply text
   TOG_ARROW,                      // Toggles highlight of arrow keys
+  ST_CBRACK,                      // curly brackets
+  ST_ABRACK,                      // angual brackets
+  ST_SBRACK,                      // square brackets
+  ST_DBSLASH,                     // double backslash
+  ST_DSLASH,                      // double slash
   EMO_SHRUG,
   EMO_CONFUSE,
   EMO_TEARS,
@@ -369,6 +374,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return true;
 
+    // brackets/slashes
+    case ST_CBRACK:
+      if (record -> event.pressed) SEND_STRING(STR_CURLY_BRACKETS);
+      else unregister_code16(keycode);
+      return false;
+    
+    case ST_SBRACK:
+      if (record -> event.pressed) SEND_STRING(STR_SQUARE_BRACKETS);
+      else unregister_code16(keycode);
+      return false;
+
+    case ST_ABRACK:
+      if (record -> event.pressed) SEND_STRING(STR_ANGLE_BRACKETS);
+      else unregister_code16(keycode);
+      return false;
+
+    case ST_DSLASH:
+      if (record -> event.pressed) SEND_STRING(STR_DOUBLE_SLASHES);
+      else unregister_code16(keycode);
+      return false;
+
+    case ST_DBSLASH:
+      if (record -> event.pressed) SEND_STRING(STR_DOUBLE_BSLASHES);
+      else unregister_code16(keycode);
+      return false;
+
+    // emoticons
     #ifdef EMOTICON_ENABLE
       case EMO_SHRUG:
         if (record -> event.pressed) SEND_STRING(STR_EMO_SHRUG);
