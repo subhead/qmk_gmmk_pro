@@ -47,7 +47,7 @@ enum custom_user_layers {
 enum custom_keycodes {
   __PLACEHOLDER__ = SAFE_RANGE,   // Placeholder dont know why needed otherwise it wont work
   KC_TOGGM,                       // Toggles gaming mode on and off (hightligh of WASD and some other gaming related keys)
-  KC_WINLCK,                      // Toggles Winkey lock on and off
+  TOG_WINLCK,                      // Toggles Winkey lock on and off
   KC_TEST,                        // Playeholder function
   KC_FDG1,                        // fdg domain suffix
   KC_3D_AR,                       // 3dpb auto reply text
@@ -75,13 +75,13 @@ enum custom_keycodes {
 //static bool is_gaming_mode_led_on = false;
 #ifdef ARROW_MODE
   static bool is_arrow_mode = true;
-  static uint8_t arrow_keys[4] = {94, 80, 98, 96};
+  static uint8_t arrow_keys[] = {94, 80, 98, 96};
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-  static uint8_t l_base_functions[28] = {LED_LWIN, LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
-  static uint8_t l_util_functions[3] = {LED_ESC, LED_F, LED_L4};
-  static uint8_t l_macro_functions[3] = {LED_ESC, LED_R, LED_F};
+  static uint8_t l_base_functions[] = {LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
+  static uint8_t l_util_functions[] = {LED_ESC, LED_F, LED_LWIN, LED_L4};
+  static uint8_t l_macro_functions[] = {LED_ESC, LED_R, LED_F};
 #endif
 
 // clang-format off
@@ -121,7 +121,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
         _______, _______, _______, RGB_HUI, _______, KC_TOGGM, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
-        _______, KC_WINLCK, _______,                            _______,                            MO(_RGB), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
+        _______, _______, _______,                            _______,                            MO(_RGB), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
     // configuration layer to access toggles etc
     [_RGB] = LAYOUT(
@@ -130,7 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
-        _______, _______, _______,                            _______,                            _______, _______, MO(_MACRO), _______, _______, _______
+        _______, TOG_WINLCK, _______,                            _______,                            _______, _______, MO(_MACRO), _______, _______, _______
     ),
     // work layer with txt shotcuts etc
     [_MACRO] = LAYOUT(
@@ -196,7 +196,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
       tap_code(KC_VOLD);
     }
   }
-  return true;
+  return false;
 }
 #endif
 // END ROTARY KNOB
@@ -323,7 +323,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
   
     // WinLock toggle
-    case KC_WINLCK:
+    case TOG_WINLCK:
       if (record->event.pressed) {
         keymap_config.no_gui = !keymap_config.no_gui;    
       }

@@ -9,7 +9,7 @@ This is a custom GMMK Pro configuration for the QMK firmware.
 - Move RESET to FN+ESC
 - CAPS Lock RGB indicator. Side LED and Caps Lock key are blinking red when enabled
 - Highlight all mapped FN keys when FN is pressed
-- Pressing FN+WIN disables the windows key and highlights the windows key red
+- Pressing FN+ALTGR+WIN disables the windows key and highlights the windows key red
 - Enabling the Windows Keys also turns the gaming lighting mode on (WASD highlighted)
 - Added GAMING_MODE_ENABLE to config.h for enabling/disabling gaming mode
 - Highlight all LED red when entering the flashing mode (FN+ESC)
