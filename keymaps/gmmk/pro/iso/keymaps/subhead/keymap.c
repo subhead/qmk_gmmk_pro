@@ -238,9 +238,11 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         newRGB = hsv_to_rgb()
         */
 
+
+
         //uprintf("%s", curHSV);
         for (uint8_t i = 0; i < sizeof(arrow_keys) / sizeof(arrow_keys[0]); i++) {
-          rgb_matrix_set_color(arrow_keys[i], RGB_WHITE);
+           rgb_matrix_set_color(arrow_keys[i], RGB_WHITE);
         }
       }
     #endif
@@ -253,7 +255,11 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
       #ifdef GAMING_MODE
         // highlight gaming keys only when gamingmode is enabled
-        if(is_gaming_mode) { 
+        if(is_gaming_mode) {
+          rgb_matrix_set_color(94, RGB_CHARTREUSE);
+          rgb_matrix_set_color(80, RGB_CHARTREUSE);
+          rgb_matrix_set_color(98, RGB_CHARTREUSE);
+          rgb_matrix_set_color(96, RGB_CHARTREUSE);
           rgb_matrix_set_color(LED_W, RGB_CHARTREUSE); //light up gaming keys with WSAD higlighted
           rgb_matrix_set_color(LED_S, RGB_CHARTREUSE);
           rgb_matrix_set_color(LED_A, RGB_CHARTREUSE);
@@ -262,6 +268,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
           rgb_matrix_set_color(LED_E, RGB_ORANGE2);
           rgb_matrix_set_color(LED_R, RGB_ORANGE2);
           rgb_matrix_set_color(LED_TAB, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_CAPS, RGB_ORANGE2);
           rgb_matrix_set_color(LED_F, RGB_ORANGE2);
           rgb_matrix_set_color(LED_Z, RGB_ORANGE2);
           rgb_matrix_set_color(LED_X, RGB_ORANGE2);
@@ -270,6 +277,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
           rgb_matrix_set_color(LED_SPC, RGB_ORANGE2);
           rgb_matrix_set_color(LED_LCTL, RGB_ORANGE2);
           rgb_matrix_set_color(LED_LSFT, RGB_ORANGE2);
+          rgb_matrix_set_color(LED_LALT, RGB_ORANGE2);
         }
       #endif
     }

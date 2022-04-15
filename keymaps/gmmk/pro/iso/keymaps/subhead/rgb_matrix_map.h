@@ -284,4 +284,28 @@ const uint8_t LED_SIDE_RIGHT[] = {
     LED_R8
 };
 
+const uint8_t LED_LIST_GAMING[] = {
+    LED_W,
+    LED_A,
+    LED_S,
+    LED_D,
+    LED_Q,
+    LED_E,
+    LED_R,
+    LED_TAB,
+    LED_CAPS,
+    LED_F,
+    LED_Z,
+    LED_X,
+    LED_C,
+    LED_V,
+    LED_SPC,
+    LED_LCTL,
+    LED_LSFT,
+    LED_LEFT,
+    LED_RIGHT,
+    LED_UP,
+    LED_DOWN
+};
+
 #endif
