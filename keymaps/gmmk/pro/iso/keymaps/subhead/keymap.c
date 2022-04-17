@@ -1,4 +1,6 @@
 /* Copyright 2021 Glorious, LLC <salman@pcgamingrace.com>
+   Copyright 2022 subhead @subhead
+  
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,6 +59,7 @@ enum custom_keycodes {
   ST_SBRACK,                      // square brackets
   ST_DBSLASH,                     // double backslash
   ST_DSLASH,                      // double slash
+  ST_RBRACK,                      // round brackets
   EMO_SHRUG,
   EMO_CONFUSE,
   EMO_TEARS,
@@ -66,6 +69,10 @@ enum custom_keycodes {
   EMO_FLYSAFE,
   FOO
 };
+// some key combos
+#define KC_COPY LCTL(KC_C)
+#define KC_CUT LCTL(KC_X)
+#define KC_PASTE LCTL(KC_V)
 
 // GLOBALS
 #ifdef GAMING_MODE
@@ -112,15 +119,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC,                   KC_PGUP,
         KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT, KC_NUHS, KC_ENT,           KC_PGDN,
         KC_LSFT, KC_NUBS, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,          KC_RSFT, KC_UP,   KC_END,
-        KC_LCTL, KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(_UTIL),   KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
+        KC_LCTL, KC_LGUI, KC_LALT,                            KC_SPC,                             KC_RALT, MO(_UTIL), KC_RCTL, KC_LEFT, KC_DOWN, KC_RGHT
     ),
     // function layer with the most used hotkeys/functions
     [_UTIL] = LAYOUT(
-        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
-        _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
+        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, _______, _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_INS,          _______,
+        _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, ST_DBSLASH, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
-        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
-        _______, _______, _______, RGB_HUI, _______, KC_TOGGM, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
+        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______,          _______,
+        KC_LEAD, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
         _______, _______, _______,                            _______,                            MO(_RGB), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
     // configuration layer to access toggles etc
@@ -128,7 +135,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
-        _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        _______, _______, _______, _______, KC_FDG1, KC_TOGGM, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
         _______, TOG_WINLCK, _______,                            _______,                            _______, _______, MO(_MACRO), _______, _______, _______
     ),
@@ -155,6 +162,37 @@ void keyboard_post_init_user(void) {
     //debug_mouse=true;
   #endif
 }
+
+// leader key
+#ifdef LEADER_ENABLE
+LEADER_EXTERNS();
+void matrix_scan_user(void) {
+  LEADER_DICTIONARY() {
+    leading = false;
+    leader_end();
+    // double slashes
+    SEQ_ONE_KEY(KC_7) {
+      SEND_STRING(STR_DOUBLE_SLASHES);
+    }
+    // double round brackets
+    SEQ_ONE_KEY(KC_8) {
+      //tap_code16(KC_CUT);
+      SEND_STRING(STR_ROUND_BRACKETS);
+      //SEND_STRING("("SS_LCTRL("v")")");
+      //send_unicode_string("äääääöööööööfööööföföfüüüü");
+    }
+    // browser reopen last closed tab
+    SEQ_TWO_KEYS(KC_B, KC_T) {
+      SEND_STRING(SS_LCTRL(SS_LSFT("t")));
+    }
+    // SEND_STRING(SS_LCTRL("a") SS_TAP(X_DELETE));
+    // fdg domain
+    SEQ_TWO_KEYS(KC_F, KC_D) {
+      SEND_STRING(STR_FDG_DOMAIN);
+    }
+  }
+}
+#endif
 
 // START ROTARY KNOB
 // ripped from: https://github.com/ForsakenRei/qmk_gmmk_pro/blob/main/gmmk/pro/ansi/keymaps/shigure/keymap.c
@@ -230,24 +268,11 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // arrow mode highlight arrow keys
     #ifdef ARROW_MODE
       if(is_arrow_mode) {
-        // get curretn HSV
-        /*
-        HSV curHSV;
-        RGB newRGB;
-        curHSV = rgb_matrix_get_hsv();
-        newRGB = hsv_to_rgb()
-        */
-
-
-
-        //uprintf("%s", curHSV);
         for (uint8_t i = 0; i < sizeof(arrow_keys) / sizeof(arrow_keys[0]); i++) {
            rgb_matrix_set_color(arrow_keys[i], RGB_WHITE);
         }
       }
     #endif
-
-    //rgblight_get_val())
 
     // Disable WIN Key and light them up also light up WASD gaming keys
     if (keymap_config.no_gui) {
@@ -385,6 +410,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     case ST_ABRACK:
       if (record->event.pressed) SEND_STRING(STR_ANGLE_BRACKETS);
+      else unregister_code16(keycode);
+      return false;
+
+    case ST_RBRACK:
+      if (record->event.pressed) SEND_STRING(STR_ROUND_BRACKETS);
       else unregister_code16(keycode);
       return false;
 
