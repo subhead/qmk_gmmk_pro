@@ -69,6 +69,10 @@ enum custom_keycodes {
   EMO_FLYSAFE,
   FOO
 };
+// some key combos
+#define KC_COPY LCTL(KC_C)
+#define KC_CUT LCTL(KC_X)
+#define KC_PASTE LCTL(KC_V)
 
 // GLOBALS
 #ifdef GAMING_MODE
@@ -119,10 +123,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     // function layer with the most used hotkeys/functions
     [_UTIL] = LAYOUT(
-        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, _______,          _______,
+        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, _______, _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_INS,          _______,
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, ST_DBSLASH, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
-        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  KC_INS, _______,          _______,
+        _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______,          _______,
         KC_LEAD, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
         _______, _______, _______,                            _______,                            MO(_RGB), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
@@ -159,7 +163,8 @@ void keyboard_post_init_user(void) {
   #endif
 }
 
-//#ifdef LEADER_ENABLE
+// leader key
+#ifdef LEADER_ENABLE
 LEADER_EXTERNS();
 void matrix_scan_user(void) {
   LEADER_DICTIONARY() {
@@ -171,15 +176,23 @@ void matrix_scan_user(void) {
     }
     // double round brackets
     SEQ_ONE_KEY(KC_8) {
+      //tap_code16(KC_CUT);
       SEND_STRING(STR_ROUND_BRACKETS);
+      //SEND_STRING("("SS_LCTRL("v")")");
+      //send_unicode_string("äääääöööööööfööööföföfüüüü");
     }
     // browser reopen last closed tab
     SEQ_TWO_KEYS(KC_B, KC_T) {
       SEND_STRING(SS_LCTRL(SS_LSFT("t")));
     }
+    // SEND_STRING(SS_LCTRL("a") SS_TAP(X_DELETE));
+    // fdg domain
+    SEQ_TWO_KEYS(KC_F, KC_D) {
+      SEND_STRING(STR_FDG_DOMAIN);
+    }
   }
 }
-//#endif
+#endif
 
 // START ROTARY KNOB
 // ripped from: https://github.com/ForsakenRei/qmk_gmmk_pro/blob/main/gmmk/pro/ansi/keymaps/shigure/keymap.c
