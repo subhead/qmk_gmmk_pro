@@ -29,6 +29,7 @@ const char* STR_EMO_FLYSAFE = "o7";
 	Brackets, slashes 
 */
 const char* STR_CURLY_BRACKETS 	= "{}";
+const char* STR_ROUND_BRACKETS 	= "()";
 const char* STR_SQUARE_BRACKETS	= "[]";
 const char* STR_ANGLE_BRACKETS 	= "<>";
 const char* STR_DOUBLE_SLASHES	= "//";

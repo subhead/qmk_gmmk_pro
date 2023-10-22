@@ -67,12 +67,14 @@ enum custom_keycodes {
   EMO_JOY,
   EMO_SAD,
   EMO_FLYSAFE,
+  KC_RF4ASHIFT,                   // russian fishing 4 auto shifter
   FOO
 };
 // some key combos
 #define KC_COPY LCTL(KC_C)
 #define KC_CUT LCTL(KC_X)
 #define KC_PASTE LCTL(KC_V)
+#define KC_RF4ASHIFT LSFT(LALT(KC_NUBS))
 
 // GLOBALS
 #ifdef GAMING_MODE
@@ -90,6 +92,8 @@ enum custom_keycodes {
   static uint8_t l_util_functions[] = {LED_ESC, LED_F, LED_LWIN, LED_L4};
   static uint8_t l_macro_functions[] = {LED_ESC, LED_R, LED_F};
 #endif
+
+static bool rf4_ashift_toggle = false;
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -123,11 +127,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     // function layer with the most used hotkeys/functions
     [_UTIL] = LAYOUT(
-        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, _______, _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_INS,          _______,
+        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, _______, _______, _______, _______, KC_F19, KC_MPRV, KC_MNXT, KC_MPLY, KC_INS,          _______,
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, ST_DBSLASH, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______,          _______,
-        KC_LEAD, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
+        KC_LEAD, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          KC_RF4ASHIFT, RGB_MOD, _______,
         _______, _______, _______,                            _______,                            MO(_RGB), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
     // configuration layer to access toggles etc
@@ -136,7 +140,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, KC_TOGGM, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, KC_F19, _______, _______, _______,          _______, _______, _______,
         _______, TOG_WINLCK, _______,                            _______,                            _______, _______, MO(_MACRO), _______, _______, _______
     ),
     // work layer with txt shotcuts etc
@@ -359,6 +363,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case TOG_WINLCK:
       if (record->event.pressed) {
         keymap_config.no_gui = !keymap_config.no_gui;    
+      }
+      return false;
+      break;
+
+    
+    // rf4 ashift toggle
+    case KC_RF4ASHIFT:
+      if (record->event.pressed) {
+        if(rf4_ashift_toggle) {
+          register_code(KC_LCTL);
+          rf4_ashift_toggle = !rf4_ashift_toggle;
+        } else {
+          register_code(KC_LCTL);
+          rf4_ashift_toggle = !rf4_ashift_toggle;
+        }
       }
       return false;
       break;
