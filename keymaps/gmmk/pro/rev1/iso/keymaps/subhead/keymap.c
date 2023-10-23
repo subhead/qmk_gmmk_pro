@@ -169,32 +169,19 @@ void keyboard_post_init_user(void) {
 
 // leader key
 #ifdef LEADER_ENABLE
-LEADER_EXTERNS();
-void matrix_scan_user(void) {
-  LEADER_DICTIONARY() {
-    leading = false;
-    leader_end();
-    // double slashes
-    SEQ_ONE_KEY(KC_7) {
+void leader_end_user(void) {
+    if (leader_sequence_one_key(KC_7)) {
       SEND_STRING(STR_DOUBLE_SLASHES);
-    }
-    // double round brackets
-    SEQ_ONE_KEY(KC_8) {
-      //tap_code16(KC_CUT);
+    } else if (leader_sequence_one_key(KC_8)) {
+      // double round brackets
       SEND_STRING(STR_ROUND_BRACKETS);
-      //SEND_STRING("("SS_LCTRL("v")")");
-      //send_unicode_string("äääääöööööööfööööföföfüüüü");
-    }
-    // browser reopen last closed tab
-    SEQ_TWO_KEYS(KC_B, KC_T) {
-      SEND_STRING(SS_LCTRL(SS_LSFT("t")));
-    }
-    // SEND_STRING(SS_LCTRL("a") SS_TAP(X_DELETE));
-    // fdg domain
-    SEQ_TWO_KEYS(KC_F, KC_D) {
+    } else if (leader_sequence_two_keys(KC_B, KC_T)) {
+      // browser reopen last closed tab
+      SEND_STRING(SS_LCTL(SS_LSFT("t")));
+    } else if (leader_sequence_two_keys(KC_F, KC_D)) {
+      // fdg domain
       SEND_STRING(STR_FDG_DOMAIN);
     }
-  }
 }
 #endif
 
@@ -246,7 +233,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
 
 #ifdef RGB_MATRIX_ENABLE
 // caps log flash side bars red, press fn and all mapped keys are highlighted red
-void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     static uint32_t cycle_led_timer = 0;
     static uint8_t  current_value   = 0;
     static uint8_t  left_side_leds[8] = {68, 71, 74, 77, 81, 84, 88, 92};
@@ -338,6 +325,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       break;
     break;
     }
+  return false;
 }
 #endif // RGB_MATRIX_ENALBED
 
@@ -345,7 +333,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   #ifdef CONSOLE_ENABLED
-    uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
+    uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %u, time: %u, interrupt: %u, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
   #endif 
 
   switch (keycode) {
