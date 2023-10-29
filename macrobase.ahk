@@ -1,4 +1,5 @@
 ; https://github.com/qmk/qmk_firmware/blob/master/keyboards/1upkeyboards/super16/keymaps/ahk_companion/ahk_companion.ahk
+; https://stackoverflow.com/questions/25414617/combination-of-specific-key-and-any-other-key
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
@@ -6,7 +7,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #Singleinstance force
 SetFormat, float, 0
 #Persistent
+SetTitleMatchMode 2
 
+window_test_title := "PrusaSlicer"
 
 
 ;=================================================================
@@ -35,8 +38,20 @@ F20::Send h
 F21::Send i
 F22::Send j
 F23::Send k
-F24::Send l
-
+;F24::Send l
+F24::
+{
+	WinGet, id, list,,, Program Manager
+	Loop, %id%
+	{
+		this_id := id%A_Index%
+		WinActivate, ahk_id %this_id%
+		WinGetClass, this_class, ahk_id %this_id%
+		WinGetTitle, this_title, ahk_id %this_id%
+		MsgBox, 4, , Visiting All Windows`n%a_index% of %id%`nahk_id %this_id%`nahk_class %this_class%`n%this_title%`n`nContinue?
+		IfMsgBox, NO, break
+	}
+}
 
 ;=================================================================
 ;                       Layer 1 ALT+F13-F24
