@@ -23,8 +23,8 @@
         "vid": "0xFEED"
     },
     "matrix_pins": {
-        "cols": ["GP10", "GP19", "GP20", "GP18"],
-        "rows": ["GP4", "GP5", "GP8", "GP9"]
+        "rows": ["GP10", "GP19", "GP20", "GP18"],
+        "cols": ["GP4", "GP5", "GP8", "GP9"]
     },
     "layouts": {
         "LAYOUT_numpad_4x4": {
