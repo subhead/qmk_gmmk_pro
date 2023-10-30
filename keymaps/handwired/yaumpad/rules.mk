@@ -1,5 +1,9 @@
 # This file intentionally left blank
+# MCU name
+MCU = RP2040
 
+# Bootloader selection
+BOOTLOADER = rp2040
 LTO_ENABLE = yes			# link time optimization -- achieves a smaller compiled size
 BOOTMAGIC_ENABLE = yes      # Enable Bootmagic Lite
 MOUSEKEY_ENABLE = no       	# Mouse keys

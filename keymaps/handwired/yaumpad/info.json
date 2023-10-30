@@ -12,10 +12,6 @@
         "mousekey": true,
         "nkro": true
     },
-    "matrix_pins": {
-        "cols": ["C2", "C2", "C2", "C2"],
-        "rows": ["D1", "D1", "D1", "D1"]
-    },
     "processor": "RP2040",
     "url": "",
     "usb": {

@@ -3,6 +3,18 @@
 
 #pragma once
 
+/* USB Device descriptor parameter */
+#define VENDOR_ID 0xFEED
+#define PRODUCT_ID 0x0000
+#define DEVICE_VER 0x0001
+#define MANUFACTURER subhead
+#define PRODUCT yaumpad
+#define DESCRIPTION A custom yet another useless macropad
+#define MATRIX_ROWS 4
+#define MATRIX_COLS 4
+#define MATRIX_ROW_PINS { GP4, GP5, GP8, GP9 }
+#define MATRIX_COL_PINS { GP10, GP19, GP20, GP18 }
+
 /*
  * Feature disable options
  *  These options are also useful to firmware size reduction.
