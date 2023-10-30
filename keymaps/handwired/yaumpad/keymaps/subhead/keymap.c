@@ -7,13 +7,13 @@
 #include "private.c"
 
 #ifdef CONSOLE_ENABLE
-  /*
-  print("string"): Print a simple string.
-  uprintf("%s string", var): Print a formatted string
-  dprint("string") Print a simple string, but only when debug mode is enabled
-  dprintf("%s string", var): Print a formatted string, but only when debug mode is enabled
-  */
-  #include "print.h"
+    /*
+    print("string"): Print a simple string.
+    uprintf("%s string", var): Print a formatted string
+    dprint("string") Print a simple string, but only when debug mode is enabled
+    dprintf("%s string", var): Print a formatted string, but only when debug mode is enabled
+    */
+    #include "print.h"
 #endif
 
 #define ARRAYSIZE(arr) sizeof(arr) / sizeof(arr[0])
@@ -51,7 +51,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * │   0   │ . │   │
      * └───────┴───┴───┘
      */
-    [0] = LAYOUT_numpad_4x4(
+    [_BASE] = LAYOUT_numpad_4x4(
         KC_P7,   KC_P8,   KC_P9,   KC_PPLS,
         KC_P4,   KC_P5,   KC_P6,
         KC_P1,   KC_P2,   KC_P3,   KC_PENT,
