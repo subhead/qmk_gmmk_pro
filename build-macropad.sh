@@ -12,6 +12,6 @@ cd /home/alex/dev/keyboards/qmk/qmk_firmware
 #pushd /home/alex/dev/keyboards/qmk/qmk_firmware
 
 qmk clean
-qmk compile -j 2 -kb handwired/yaumpad -km subhead -e CONVERT_TO=promicro_rp2040
+qmk compile -j 2 -kb handwired/yaumpad -km subhead 
 
 #popd

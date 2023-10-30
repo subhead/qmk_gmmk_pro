@@ -4,10 +4,7 @@
 #pragma once
 
 
-#define MATRIX_ROWS 4
-#define MATRIX_COLS 4
-#define MATRIX_ROW_PINS { GP4, GP5, GP8, GP9 }
-#define MATRIX_COL_PINS { GP10, GP19, GP20, GP18 }
+
 
 /*
  * Feature disable options
@@ -25,6 +22,9 @@
 //#define NO_ACTION_TAPPING
 //#define NO_ACTION_ONESHOT
 
+#define RP2040_BOOTLOADER_DOUBLE_TAP_RESET
+#define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 200U
+#define SERIAL_USART_FULL_DUPLEX
 
 #ifdef CONSOLE_ENABLE
     #define CONSOLE_ENABLED
@@ -57,6 +57,6 @@
 #define EMOTICON_ENABLE
 
 #ifdef ENCODER_ENABLE
-	#define ENCODERS_PAD_A { D7 }
-	#define ENCODERS_PAD_B { E6 }
+	#define ENCODERS_PAD_A { GP6 }
+	#define ENCODERS_PAD_B { GP7 }
 #endif

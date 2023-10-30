@@ -31,7 +31,7 @@ enum custom_keycodes {
     KC_CF_MOD,
     KC_LAYER_RESET,
     FOO
-}
+};
 
 // some key combos
 #define KC_COPY LCTL(KC_C)
@@ -110,7 +110,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 // encoder updates
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    uint8_t mods_state = get_mods();
+    //uint8_t mods_state = get_mods();
     
     if (clockwise) {
         tap_code(KC_PGDN);
