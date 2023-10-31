@@ -1,6 +1,3 @@
 bin
 .vscode
 build.sh
-firmware
-qmk_firmware
-users/subhead/private.*
