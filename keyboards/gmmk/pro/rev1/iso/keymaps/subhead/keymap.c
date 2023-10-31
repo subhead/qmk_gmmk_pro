@@ -67,12 +67,15 @@ enum custom_keycodes {
   EMO_JOY,
   EMO_SAD,
   EMO_FLYSAFE,
+  KC_RF4ASHIFT,                   // russian fishing 4 auto shifter
+  KC_CF24,                        // custom f24 key
   FOO
 };
 // some key combos
 #define KC_COPY LCTL(KC_C)
 #define KC_CUT LCTL(KC_X)
 #define KC_PASTE LCTL(KC_V)
+#define KC_RF4ASHIFT LSFT(LALT(KC_NUBS))
 
 // GLOBALS
 #ifdef GAMING_MODE
@@ -81,15 +84,19 @@ enum custom_keycodes {
 
 //static bool is_gaming_mode_led_on = false;
 #ifdef ARROW_MODE
-  static bool is_arrow_mode = true;
+  static bool is_arrow_mode   = true;
   static uint8_t arrow_keys[] = {94, 80, 98, 96};
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-  static uint8_t l_base_functions[] = {LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
-  static uint8_t l_util_functions[] = {LED_ESC, LED_F, LED_LWIN, LED_L4};
-  static uint8_t l_macro_functions[] = {LED_ESC, LED_R, LED_F};
+  static uint8_t l_base_functions[]   = {LED_V, LED_ESC, LED_F1, LED_1, LED_Q, LED_F2, LED_2, LED_W, LED_S, LED_X, LED_F3, LED_F4, LED_F5, LED_F6, LED_N, LED_F7, LED_F8, LED_F9, LED_F10, LED_F11, LED_F12, LED_L2, LED_L5, 94, 95, 96, 98};
+  static uint8_t l_util_functions[]   = {LED_ESC, LED_F, LED_LWIN, LED_L4};
+  static uint8_t l_macro_functions[]  = {LED_ESC, LED_R, LED_F};
 #endif
+
+// toggles
+static bool rf4_ashift_toggle = false;
+//static bool f24_toggle        = false;
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -123,25 +130,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     // function layer with the most used hotkeys/functions
     [_UTIL] = LAYOUT(
-        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, _______, _______, _______, _______, _______, KC_MPRV, KC_MNXT, KC_MPLY, KC_INS,          _______,
+        RESET, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, _______, _______, _______, _______, KC_F19, KC_MPRV, KC_MNXT, KC_MPLY, KC_INS,          _______,
         _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, ST_DBSLASH, _______, _______,            _______,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,  _______, _______,          _______,
-        KC_LEAD, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
+        QK_LEAD, _______, _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          KC_RF4ASHIFT, RGB_MOD, _______,
         _______, _______, _______,                            _______,                            MO(_RGB), _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     ),
     // configuration layer to access toggles etc
     [_RGB] = LAYOUT(
-        RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        RESET,   KC_CF24,  KC_F23, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, KC_TOGGM, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
-        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______,
+        _______, _______, _______, _______, _______, _______, _______, _______, KC_F19, _______, _______, _______,          _______, _______, _______,
         _______, TOG_WINLCK, _______,                            _______,                            _______, _______, MO(_MACRO), _______, _______, _______
     ),
     // work layer with txt shotcuts etc
     [_MACRO] = LAYOUT(
-        RESET, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
+        RESET,     KC_CF24,  KC_F23, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
         _______, EMO_SHRUG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,            _______,
         _______, _______, _______, _______, KC_3D_AR, _______, _______, _______, _______, _______, _______, _______, _______,                   TOG_ARROW,
         _______, _______, _______, _______, KC_FDG1, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,
@@ -165,32 +172,22 @@ void keyboard_post_init_user(void) {
 
 // leader key
 #ifdef LEADER_ENABLE
-LEADER_EXTERNS();
-void matrix_scan_user(void) {
-  LEADER_DICTIONARY() {
-    leading = false;
-    leader_end();
-    // double slashes
-    SEQ_ONE_KEY(KC_7) {
+void leader_end_user(void) {
+    if (leader_sequence_one_key(KC_7)) {
       SEND_STRING(STR_DOUBLE_SLASHES);
-    }
-    // double round brackets
-    SEQ_ONE_KEY(KC_8) {
-      //tap_code16(KC_CUT);
+    } else if (leader_sequence_one_key(KC_8)) {
+      // double round brackets
       SEND_STRING(STR_ROUND_BRACKETS);
-      //SEND_STRING("("SS_LCTRL("v")")");
-      //send_unicode_string("äääääöööööööfööööföföfüüüü");
-    }
-    // browser reopen last closed tab
-    SEQ_TWO_KEYS(KC_B, KC_T) {
-      SEND_STRING(SS_LCTRL(SS_LSFT("t")));
-    }
-    // SEND_STRING(SS_LCTRL("a") SS_TAP(X_DELETE));
-    // fdg domain
-    SEQ_TWO_KEYS(KC_F, KC_D) {
+    } else if (leader_sequence_two_keys(KC_8, KC_8)) {
+      // double round brackets
+      SEND_STRING(STR_SQUARE_BRACKETS);
+    } else if (leader_sequence_two_keys(KC_B, KC_T)) {
+      // browser reopen last closed tab
+      SEND_STRING(SS_LCTL(SS_LSFT("t")));
+    } else if (leader_sequence_two_keys(KC_F, KC_D)) {
+      // fdg domain
       SEND_STRING(STR_FDG_DOMAIN);
     }
-  }
 }
 #endif
 
@@ -242,7 +239,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
 
 #ifdef RGB_MATRIX_ENABLE
 // caps log flash side bars red, press fn and all mapped keys are highlighted red
-void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     static uint32_t cycle_led_timer = 0;
     static uint8_t  current_value   = 0;
     static uint8_t  left_side_leds[8] = {68, 71, 74, 77, 81, 84, 88, 92};
@@ -269,7 +266,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     #ifdef ARROW_MODE
       if(is_arrow_mode) {
         for (uint8_t i = 0; i < sizeof(arrow_keys) / sizeof(arrow_keys[0]); i++) {
-           rgb_matrix_set_color(arrow_keys[i], RGB_WHITE);
+          rgb_matrix_set_color(arrow_keys[i], RGB_WHITE);
         }
       }
     #endif
@@ -334,6 +331,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       break;
     break;
     }
+  return false;
 }
 #endif // RGB_MATRIX_ENALBED
 
@@ -341,7 +339,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
   #ifdef CONSOLE_ENABLED
-    uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %b, time: %u, interrupt: %b, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
+    uprintf("KL: kc: 0x%04X, col: %u, row: %u, pressed: %u, time: %u, interrupt: %u, count: %u\n", keycode, record->event.key.col, record->event.key.row, record->event.pressed, record->event.time, record->tap.interrupted, record->tap.count);
   #endif 
 
   switch (keycode) {
@@ -359,6 +357,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case TOG_WINLCK:
       if (record->event.pressed) {
         keymap_config.no_gui = !keymap_config.no_gui;    
+      }
+      return false;
+      break;
+
+    
+    // rf4 ashift toggle
+    case KC_RF4ASHIFT:
+      if (record->event.pressed) {
+        if(rf4_ashift_toggle) {
+          register_code(KC_LCTL);
+          rf4_ashift_toggle = !rf4_ashift_toggle;
+        } else {
+          register_code(KC_LCTL);
+          rf4_ashift_toggle = !rf4_ashift_toggle;
+        }
       }
       return false;
       break;
@@ -427,6 +440,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) SEND_STRING(STR_DOUBLE_BSLASHES);
       else unregister_code16(keycode);
       return false;
+
+    // f keys extension
+    case KC_CF24:
+      if(record->event.pressed) {
+        register_code(KC_F24);     
+      } else {
+        unregister_code(KC_F24);
+      }
+      return false;
+      break;
+
+
 
     // emoticons
     #ifdef EMOTICON_ENABLE
